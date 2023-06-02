@@ -1,6 +1,13 @@
 import { createSlice } from '@reduxjs/toolkit';
 import { authenticateUserThunk } from './asyncThunks';
-import { deleteCookie, setCookie } from '../../utils/storage';
+import {
+  deleteCookie,
+  deleteItemLS,
+  getItemLS,
+  readCookie,
+  setCookie,
+  setItemLS,
+} from '../../utils/storage';
 import { REDUCERS } from '../../constants';
 
 const initialState = {
@@ -10,7 +17,7 @@ const initialState = {
   error: {
     auth: false,
   },
-  userInfo: null,
+  userInfo: getItemLS('user'),
 };
 
 const commonSlice = createSlice({
@@ -23,13 +30,19 @@ const commonSlice = createSlice({
         state.loader.auth = true;
         state.error.auth = false;
         state.userInfo = null;
+
+        deleteCookie('token');
+        deleteItemLS('user');
       })
       .addCase(authenticateUserThunk.fulfilled, (state, action) => {
+        const userInfo = { ...action?.payload?.userDetails, isLoggedIn: true };
+
         state.loader.auth = false;
         state.error.auth = false;
-        state.userInfo = { ...action?.payload?.userDetails, isLoggedIn: true };
+        state.userInfo = userInfo;
 
         setCookie('token', action?.payload?.token);
+        setItemLS('user', userInfo);
       })
       .addCase(authenticateUserThunk.rejected, (state, action) => {
         state.loader.auth = false;
@@ -38,6 +51,7 @@ const commonSlice = createSlice({
         state.userInfo = null;
 
         deleteCookie('token');
+        deleteItemLS('user');
       });
   },
 });
