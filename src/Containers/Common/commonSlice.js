@@ -1,13 +1,6 @@
 import { createSlice } from '@reduxjs/toolkit';
 import { authenticateUserThunk } from './asyncThunks';
-import {
-  deleteCookie,
-  deleteItemLS,
-  getItemLS,
-  readCookie,
-  setCookie,
-  setItemLS,
-} from '../../utils/storage';
+import { deleteCookie, deleteItemLS, getItemLS, setCookie, setItemLS } from '../../utils/storage';
 import { REDUCERS } from '../../constants';
 
 const initialState = {

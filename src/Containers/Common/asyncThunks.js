@@ -7,7 +7,6 @@ export const authenticateUserThunk = createAsyncThunk('user/authenticate', async
 
     return response.data;
   } catch (err) {
-    console.log(err);
     throw err?.response?.data || err;
   }
 });
