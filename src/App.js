@@ -1,28 +1,28 @@
-import { Provider } from 'react-redux';
-import { RouterProvider, createBrowserRouter } from 'react-router-dom';
+import React from 'react';
+import { useSelector } from 'react-redux';
+import { Navigate, RouterProvider, createBrowserRouter } from 'react-router-dom';
 
-import store from './Store/store';
-import { paths } from './constants';
+import { PATHS, REDUCERS } from './constants';
 
 import SignIn from './Containers/Auth/SignIn';
 
-const router = createBrowserRouter([
-  {
-    path: '/',
-    element: <div>Home</div>,
-  },
-  {
-    path: paths.signin,
-    element: <SignIn />,
-  },
-]);
+const App = () => {
+  const { userInfo } = useSelector((reducer) => reducer[REDUCERS.common]);
 
-function App() {
-  return (
-    <Provider store={store}>
-      <RouterProvider router={router} />
-    </Provider>
-  );
-}
+  const router = createBrowserRouter([
+    {
+      path: PATHS.home,
+      element: userInfo?.isLoggedIn ? <div>Home</div> : <Navigate to={PATHS.signin} />,
+      exact: true,
+    },
+    {
+      path: PATHS.signin,
+      element: <SignIn />,
+      exact: true,
+    },
+  ]);
+
+  return <RouterProvider router={router} />;
+};
 
 export default App;

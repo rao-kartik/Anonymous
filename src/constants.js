@@ -1,3 +1,8 @@
-export const paths  = {
-  signin: '/auth/signin'
-}
+export const PATHS = {
+  home: '/',
+  signin: '/auth/signin',
+};
+
+export const REDUCERS = {
+  common: 'commonReducer',
+};
