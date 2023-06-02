@@ -19,13 +19,23 @@ const SignIn = () => {
   const toast = useToast();
 
   const handleLogin = async () => {
-    if (typeof window !== 'undefined' && window?.ethereum) {
-      await window?.ethereum?.request({ method: 'eth_requestAccounts' });
-      const web3 = new Web3(window?.ethereum);
+    try {
+      if (typeof window !== 'undefined' && window?.ethereum) {
+        await window?.ethereum?.request({ method: 'eth_requestAccounts' });
+        const web3 = new Web3(window?.ethereum);
 
-      const accounts = await web3?.eth?.getAccounts();
+        const accounts = await web3?.eth?.getAccounts();
 
-      dispatch(authenticateUserThunk(accounts[0]));
+        dispatch(authenticateUserThunk(accounts[0]));
+      }
+    } catch (err) {
+      toast({
+        title: err?.message,
+        status: 'error',
+        duration: 2000,
+        isClosable: true,
+        position: 'top-right',
+      });
     }
   };
 
