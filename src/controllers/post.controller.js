@@ -44,7 +44,8 @@ const newPost = async (req, res) => {
     }
 
     const data = {
-      ...req.body,
+      post: req.body.post,
+      group: req.body.group || null,
       postedBy: req?.userId,
     };
 
