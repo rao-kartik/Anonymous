@@ -4,9 +4,11 @@ const Web3 = require('web3');
 const { verifyToken } = require('../utils/jwt');
 const { extractCookies } = require('../utils/cookies');
 
-const authMiddleware = (req, res, next) => {
+const validateTokenMiddleware = (req, res, next) => {
+  const { headers } = req;
+
   const token =
-    extractCookies(req.headers?.cookie)?.token || req.headers?.authorization?.split(/\s+/).pop();
+    extractCookies(headers?.cookie)?.token || req.headers?.authorization?.split(/\s+/).pop();
 
   if (!token) {
     return res.status(401).send({
@@ -17,7 +19,7 @@ const authMiddleware = (req, res, next) => {
 
   try {
     const userData = verifyToken(token);
-    req.userDetails = userData.data;
+    req.userId = userData.id;
 
     next();
   } catch (err) {
@@ -30,7 +32,6 @@ const authMiddleware = (req, res, next) => {
 
 const validateAddressMiddleware = async (req, res, next) => {
   try {
-    console.log(req);
     const { address } = req.params;
 
     const web3 = new Web3();
@@ -64,6 +65,6 @@ const validateAddressMiddleware = async (req, res, next) => {
 };
 
 module.exports = {
-  auth: authMiddleware,
+  validateToken: validateTokenMiddleware,
   validateAddress: validateAddressMiddleware,
 };

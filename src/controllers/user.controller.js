@@ -1,19 +1,18 @@
 const USER = require('../models/user.model');
-const { generateToken } = require('../utils/jwt');
+const { generateToken, verifyToken } = require('../utils/jwt');
 
 const authenticateUser = async (req, res) => {
   try {
-    const { address } = req.params;
+    const { address: walletAddress } = req.params;
 
-    let user = await USER.findOne({ address }).lean().exec();
+    let user = await USER.findOne({ walletAddress }).lean().exec();
 
     if (!user) {
-      user = await USER.create({ address });
+      user = await USER.create({ walletAddress });
     }
 
     const token = generateToken({
       id: user._id,
-      address: user.address,
     });
 
     return res.send({
@@ -26,7 +25,7 @@ const authenticateUser = async (req, res) => {
       token,
     });
   } catch (err) {
-    return res.send({
+    return res.status(400).send({
       success: false,
       message: err.message,
     });
