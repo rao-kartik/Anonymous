@@ -73,12 +73,13 @@ const editPost = async (req, res) => {
       });
     }
 
-    let post = await POST.findByIdAndUpdate(postId, { post: req?.body?.post });
-    post = await POST.findById(postId).lean().exec();
+    const oldPost = await POST.findByIdAndUpdate(postId, { post: req?.body?.post });
+    const newPost = await POST.findById(postId).lean().exec();
 
     return res.status(200).send({
       success: true,
-      post,
+      oldPost: oldPost?.post,
+      newPost: newPost?.post,
     });
   } catch (err) {
     return res.status(400).send({
