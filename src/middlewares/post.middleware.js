@@ -9,14 +9,14 @@ const isPostOwner = async (req, res, next) => {
     if (!post) {
       return res.status(400).send({
         success: false,
-        messaage: 'Post not found',
+        message: 'Post not found',
       });
     }
 
     if (post?.postedBy?.toString() !== req.userId) {
       return res.status(401).send({
         success: false,
-        messaage: 'Unauthorised User',
+        message: 'Unauthorised User',
       });
     }
 

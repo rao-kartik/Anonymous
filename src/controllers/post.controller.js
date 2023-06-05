@@ -13,7 +13,7 @@ const allPosts = async (_, res) => {
   } catch (err) {
     return res.status(400).send({
       success: false,
-      messaage: err.message,
+      message: err.message,
     });
   }
 };
@@ -29,7 +29,7 @@ const allPostsOfUser = async (req, res) => {
   } catch (err) {
     return res.status(400).send({
       success: false,
-      messaage: err.message,
+      message: err.message,
     });
   }
 };
@@ -39,7 +39,7 @@ const newPost = async (req, res) => {
     if (!req.body.post || req.body.post === '') {
       return res.status(400).send({
         success: false,
-        messaage: 'Invalid post',
+        message: 'Invalid post',
       });
     }
 
@@ -57,7 +57,7 @@ const newPost = async (req, res) => {
   } catch (err) {
     return res.status(400).send({
       success: false,
-      messaage: err.message,
+      message: err.message,
     });
   }
 };
@@ -69,7 +69,7 @@ const editPost = async (req, res) => {
     if (!postId && (!req.body.post || req.body.post === '')) {
       return res.status(400).send({
         success: false,
-        messaage: 'Invalid post',
+        message: 'Invalid post',
       });
     }
 
@@ -83,7 +83,7 @@ const editPost = async (req, res) => {
   } catch (err) {
     return res.status(400).send({
       success: false,
-      messaage: err.message,
+      message: err.message,
     });
   }
 };
@@ -95,7 +95,7 @@ const deletePost = async (req, res) => {
     if (!postId) {
       return res.status(400).send({
         success: false,
-        messaage: 'Invalid post',
+        message: 'Invalid post',
       });
     }
 
@@ -110,7 +110,7 @@ const deletePost = async (req, res) => {
   } catch (err) {
     return res.status(400).send({
       success: false,
-      messaage: err.message,
+      message: err.message,
     });
   }
 };
