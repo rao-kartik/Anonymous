@@ -43,7 +43,7 @@ router.get('/post/all', validateToken, allPosts);
 router.get('/post/all/user', validateToken, allPostsOfUser);
 router.get('/post/like/all/:postId', validateToken, getAllLikes);
 router.post('/post/like/:postId', validateToken, likePost);
-router.delete('/post/dislike/:likeId', validateToken, dislikePost);
+router.post('/post/dislike/:postId', validateToken, dislikePost);
 router.post('/post/comment/new/:postId', validateToken, newComment);
 router.get('/post/comment/all/:postId', validateToken, getAllComments);
 router.patch('/post/comment/edit/:commentId', validateToken, editComment);

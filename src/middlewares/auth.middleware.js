@@ -23,7 +23,7 @@ const validateTokenMiddleware = (req, res, next) => {
 
     next();
   } catch (err) {
-    return res.clearCookie('token').send({
+    return res.status(400).send({
       status: false,
       message: err.message,
     });

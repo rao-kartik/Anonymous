@@ -67,9 +67,9 @@ const likePost = async (req, res) => {
 
 const dislikePost = async (req, res) => {
   try {
-    const { likeId } = req.params;
+    const { postId } = req.params;
 
-    let like = await LIKE.findById(likeId).lean().exec();
+    let like = await LIKE.findOne({ likedBy: req.userId, post: postId }).lean().exec();
 
     if (!like) {
       return res.status(400).send({
@@ -79,13 +79,13 @@ const dislikePost = async (req, res) => {
     }
 
     if (like?.likedBy?.toString() !== req.userId) {
-      res.status(400).send({
+      return res.status(400).send({
         success: true,
         message: 'Unauthorised User',
       });
     }
 
-    like = await LIKE.findByIdAndDelete(likeId);
+    like = await LIKE.findByIdAndDelete(like?._id);
     const post = await POST.findById(like?.post).lean().exec();
     await POST.findByIdAndUpdate(post?._id, { totalLikes: post?.totalLikes - 1 });
 

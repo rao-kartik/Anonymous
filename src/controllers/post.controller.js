@@ -2,13 +2,31 @@ const POST = require('../models/post.model');
 const LIKE = require('../models/likes.model');
 const COMMENT = require('../models/comment.model');
 
-const allPosts = async (_, res) => {
+const allPosts = async (req, res) => {
   try {
-    const posts = await POST.find({}).lean().exec();
+    const posts = await POST.find({ group: null }).populate('postedBy').lean().exec();
+
+    const formattedPosts = [];
+
+    for (let i = 0; i < posts.length; i++) {
+      const userLiked = await LIKE.findOne({ likedBy: req.userId, post: posts[i]?._id })
+        .lean()
+        .exec();
+
+      formattedPosts[i] = {
+        ...posts[i],
+        postedBy: {
+          userName: posts[i]?.postedBy?.userName,
+          walletAddress: posts[i]?.postedBy?.walletAddress,
+        },
+        userLiked:
+          userLiked && posts[i]?._id?.toString() === userLiked?.post?.toString() ? true : false,
+      };
+    }
 
     return res.send({
       success: true,
-      posts,
+      posts: formattedPosts,
     });
   } catch (err) {
     return res.status(400).send({
@@ -20,11 +38,29 @@ const allPosts = async (_, res) => {
 
 const allPostsOfUser = async (req, res) => {
   try {
-    const posts = await POST.find({ postedBy: req.userId }).lean().exec();
+    let posts = await POST.find({ postedBy: req.userId }).lean().exec();
+
+    const formattedPosts = [];
+
+    for (let i = 0; i < posts.length; i++) {
+      const userLiked = await LIKE.findOne({ likedBy: req.userId, post: posts[i]?._id })
+        .lean()
+        .exec();
+
+      formattedPosts[i] = {
+        ...posts[i],
+        postedBy: {
+          userName: posts[i]?.postedBy?.userName,
+          walletAddress: posts[i]?.postedBy?.walletAddress,
+        },
+        userLiked:
+          userLiked && posts[i]?._id?.toString() === userLiked?.post?.toString() ? true : false,
+      };
+    }
 
     return res.send({
       success: true,
-      posts,
+      posts: formattedPosts,
     });
   } catch (err) {
     return res.status(400).send({
