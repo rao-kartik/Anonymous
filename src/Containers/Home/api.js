@@ -6,6 +6,8 @@ const ENDPOINTS = {
   getAllPost: 'post/all',
   getAllPostUser: 'post/user',
   deletePost: 'post/delete',
+  likePost: 'post/like',
+  dislikePost: 'post/dislike',
 };
 
 export const newPostApi = async (data) => {
@@ -51,6 +53,18 @@ export const getAllPostUserApi = async () => {
 export const deletePostApi = async (id) => {
   try {
     const response = await axios.delete(`${ENDPOINTS.editPost}/${id}`);
+
+    return response;
+  } catch (err) {
+    throw err;
+  }
+};
+
+export const likeDislikeApi = async ({ postId, status }) => {
+  try {
+    const response = await axios.post(
+      `${status === 'like' ? ENDPOINTS.likePost : ENDPOINTS.dislikePost}/${postId}`
+    );
 
     return response;
   } catch (err) {

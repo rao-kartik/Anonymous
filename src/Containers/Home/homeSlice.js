@@ -4,6 +4,7 @@ import {
   editPostThunk,
   getAllPostsThunk,
   getAllPostsUserThunk,
+  likeDislikeThunk,
   newPostThunk,
 } from './asyncThunks';
 import { REDUCERS } from '../../constants';
@@ -35,7 +36,7 @@ const homeSlice = createSlice({
       .addCase(getAllPostsThunk.fulfilled, (state, action) => {
         state.loader.getPost = false;
         state.error.getPost = false;
-        state.posts = action.payload;
+        state.posts = action.payload?.posts;
       })
       .addCase(getAllPostsThunk.rejected, (state) => {
         state.loader.getPost = false;
@@ -49,7 +50,7 @@ const homeSlice = createSlice({
       .addCase(getAllPostsUserThunk.fulfilled, (state, action) => {
         state.loader.getPost = false;
         state.error.getPost = false;
-        state.posts = action.payload;
+        state.posts = action.payload?.posts;
       })
       .addCase(getAllPostsUserThunk.rejected, (state) => {
         state.loader.getPost = false;
@@ -96,6 +97,30 @@ const homeSlice = createSlice({
       .addCase(deletePostThunk.rejected, (state) => {
         state.loader.deletePost = false;
         state.error.deletePost = true;
+      })
+      // like dislike
+      .addCase(likeDislikeThunk.pending, (state) => {
+        state.loader.likeDislike = true;
+        state.error.likeDislike = false;
+      })
+      .addCase(likeDislikeThunk.fulfilled, (state, action) => {
+        state.loader.likeDislike = false;
+        state.error.likeDislike = false;
+        console.log(action.payload);
+        state.posts = state.posts.map((_item) =>
+          _item?._id === action.payload?.postId
+            ? {
+                ..._item,
+                userLiked: action.payload?.status === 'like' ? true : false,
+                totalLikes:
+                  action.payload?.status === 'like' ? _item?.totalLikes + 1 : _item?.totalLikes - 1,
+              }
+            : _item
+        );
+      })
+      .addCase(likeDislikeThunk.rejected, (state) => {
+        state.loader.likeDislike = false;
+        state.error.likeDislike = true;
       });
   },
 });

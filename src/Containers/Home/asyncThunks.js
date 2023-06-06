@@ -1,5 +1,12 @@
 import { createAsyncThunk } from '@reduxjs/toolkit';
-import { deletePostApi, editPostApi, getAllPostApi, getAllPostUserApi, newPostApi } from './api';
+import {
+  deletePostApi,
+  editPostApi,
+  getAllPostApi,
+  getAllPostUserApi,
+  likeDislikeApi,
+  newPostApi,
+} from './api';
 
 export const getAllPostsThunk = createAsyncThunk('post/get/all', async (payload) => {
   try {
@@ -46,6 +53,16 @@ export const deletePostThunk = createAsyncThunk('post/delete', async (payload) =
     const response = await deletePostApi(payload);
 
     return response.data;
+  } catch (err) {
+    throw err?.response?.data || err;
+  }
+});
+
+export const likeDislikeThunk = createAsyncThunk('post/likeDislike', async (payload) => {
+  try {
+    const response = await likeDislikeApi(payload);
+
+    return { ...response.data, ...payload };
   } catch (err) {
     throw err?.response?.data || err;
   }

@@ -5,7 +5,7 @@ import Header from '../../Components/Common/Header/Header';
 
 import { headerHeight } from '../../Components/Common/Header/constants';
 import WritePost from '../../Components/Home/WritePost/WritePost';
-import HomeFeeds from '../../Components/Home/HomeFeeds/HomeFeeds';
+import Feeds from '../../Components/Home/Feeds/Feeds';
 
 const boxWidth = 25;
 const boxPadding = 6;
@@ -25,10 +25,10 @@ const Home = () => {
       <Box w={`${boxWidth}%`} h="100%">
         <Text>Profile</Text>
       </Box>
-      <Box w={`calc(100% - ${2 * boxWidth}%)`} h="100%" overflowY="auto">
+      <Box w={`calc(100% - ${2 * boxWidth}%)`} h="100%" overflowY="auto" className="hide-scrollbar">
         <WritePost />
 
-        <HomeFeeds />
+        <Feeds />
       </Box>
       <Box w={`${boxWidth}%`} h="100%">
         <Heading size="md">Followers</Heading>

@@ -1,5 +1,5 @@
 import Axios from 'axios';
-import { getItemLS } from './storage';
+import { deleteItemLS, getItemLS } from './storage';
 
 const axios = Axios.create();
 
@@ -13,6 +13,20 @@ axios.interceptors.request.use(
     return config;
   },
   function (err) {
+    return Promise.reject(err);
+  }
+);
+
+axios.interceptors.response.use(
+  function (response) {
+    return response;
+  },
+  function (err) {
+    if (err.response.data.message === 'jwt expired') {
+      deleteItemLS('token');
+      deleteItemLS('user');
+      window.location.href = '/auth/signin';
+    }
     return Promise.reject(err);
   }
 );
