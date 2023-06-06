@@ -10,7 +10,8 @@ export const readCookie = (name) => {
   const cookie = document.cookie
     .split(';')
     ?.find((_row) => _row?.trim()?.startsWith(`${name}=`))
-    ?.split('=')?.[1];
+    ?.split('=')?.[1]
+    ?.split(', path')?.[0];
 
   return cookie;
 };

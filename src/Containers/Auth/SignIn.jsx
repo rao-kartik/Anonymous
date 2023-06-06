@@ -72,7 +72,7 @@ const SignIn = () => {
         color="#000"
         boxShadow="base"
         size="md"
-        gap={10}
+        gap={3}
         py={6}
         px={10}
         onClick={handleLogin}
