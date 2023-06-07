@@ -65,6 +65,7 @@ const homeSlice = createSlice({
         state.loader.newPost = false;
         state.error.newPost = false;
         state.posted = true;
+        state.posts = [action?.payload?.post, ...(state.posts || [])];
       })
       .addCase(newPostThunk.rejected, (state) => {
         state.loader.newPost = false;
@@ -92,7 +93,7 @@ const homeSlice = createSlice({
       .addCase(deletePostThunk.fulfilled, (state, action) => {
         state.loader.deletePost = false;
         state.error.deletePost = false;
-        state.posts = action.payload;
+        state.posts = state.posts?.filter((_post) => _post?._id !== action?.payload?.postId);
       })
       .addCase(deletePostThunk.rejected, (state) => {
         state.loader.deletePost = false;

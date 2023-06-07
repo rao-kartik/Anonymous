@@ -52,7 +52,7 @@ export const deletePostThunk = createAsyncThunk('post/delete', async (payload) =
   try {
     const response = await deletePostApi(payload);
 
-    return response.data;
+    return { ...response.data, postId: payload };
   } catch (err) {
     throw err?.response?.data || err;
   }

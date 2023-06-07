@@ -52,7 +52,7 @@ export const getAllPostUserApi = async () => {
 
 export const deletePostApi = async (id) => {
   try {
-    const response = await axios.delete(`${ENDPOINTS.editPost}/${id}`);
+    const response = await axios.delete(`${ENDPOINTS.deletePost}/${id}`);
 
     return response;
   } catch (err) {

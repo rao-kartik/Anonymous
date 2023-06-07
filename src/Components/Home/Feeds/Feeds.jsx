@@ -4,21 +4,28 @@ import moment from 'moment/moment';
 import { Box, Flex, Grid, Heading, Text } from '@chakra-ui/layout';
 
 import {
+  deletePostThunk,
   getAllPostsThunk,
   getAllPostsUserThunk,
   likeDislikeThunk,
 } from '../../../Containers/Home/asyncThunks';
 import { REDUCERS } from '../../../constants';
 import { Button } from '@chakra-ui/button';
+import { DeleteIcon } from '@chakra-ui/icons';
 
 const Feeds = (props) => {
   const dispatch = useDispatch();
   const { posts } = useSelector((state) => state[REDUCERS.home]);
+  const { userInfo } = useSelector((state) => state[REDUCERS.common]);
 
   const { isUserFeeds = false } = props;
 
   const handleLikeDislike = (postId, previousStatus) => {
     dispatch(likeDislikeThunk({ postId, status: previousStatus === false ? 'like' : 'dislike' }));
+  };
+
+  const handleDeletePost = (postId) => {
+    dispatch(deletePostThunk(postId));
   };
 
   useEffect(() => {
@@ -33,7 +40,23 @@ const Feeds = (props) => {
     <Flex p={4} pt={0} direction="column" alignItems="flex-end" gap={4}>
       {posts?.map((_item) => (
         <Box w="100%" p={4} pb={0} bg="#fff" borderRadius={8} boxShadow="sm" key={_item?._id}>
-          <Box pb={2} mb={0.5} borderBottom="1px" borderColor="#dfe6e9">
+          {console.log(_item)}
+          <Box pb={2} mb={0.5} borderBottom="1px" borderColor="#dfe6e9" position="relative">
+            {_item?.postedBy?.id === userInfo?.id && (
+              <Button
+                position="absolute"
+                top={0}
+                right={-3}
+                width="14px"
+                height="14px"
+                bg="none"
+                p={0}
+                _hover={{ bg: 'none' }}
+                onClick={() => handleDeletePost(_item?._id)}
+              >
+                <DeleteIcon w="100%" h="100%" />
+              </Button>
+            )}
             <Flex>
               <Grid
                 w={8}
@@ -57,7 +80,6 @@ const Feeds = (props) => {
                 </Text>
               </Box>
             </Flex>
-
             <Text fontSize="md" color="#2d3436" mt={2}>
               {_item?.post || '-'}
             </Text>
