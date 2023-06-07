@@ -2,9 +2,11 @@ import { createAsyncThunk } from '@reduxjs/toolkit';
 import {
   deletePostApi,
   editPostApi,
+  getAllCommentsApi,
   getAllPostApi,
   getAllPostUserApi,
   likeDislikeApi,
+  newCommentApi,
   newPostApi,
 } from './api';
 
@@ -63,6 +65,26 @@ export const likeDislikeThunk = createAsyncThunk('post/likeDislike', async (payl
     const response = await likeDislikeApi(payload);
 
     return { ...response.data, ...payload };
+  } catch (err) {
+    throw err?.response?.data || err;
+  }
+});
+
+export const getAllCommentsThunk = createAsyncThunk('comment/get/all', async (payload) => {
+  try {
+    const response = await getAllCommentsApi(payload);
+
+    return response.data;
+  } catch (err) {
+    throw err?.response?.data || err;
+  }
+});
+
+export const newCommentThunk = createAsyncThunk('comment/new', async (payload) => {
+  try {
+    const response = await newCommentApi(payload);
+
+    return response.data;
   } catch (err) {
     throw err?.response?.data || err;
   }

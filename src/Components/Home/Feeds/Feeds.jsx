@@ -1,10 +1,11 @@
-import React, { memo, useEffect } from 'react';
+import React, { memo, useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import moment from 'moment/moment';
 import { Box, Flex, Grid, Heading, Text } from '@chakra-ui/layout';
 
 import {
   deletePostThunk,
+  getAllCommentsThunk,
   getAllPostsThunk,
   getAllPostsUserThunk,
   likeDislikeThunk,
@@ -12,6 +13,8 @@ import {
 import { REDUCERS } from '../../../constants';
 import { Button } from '@chakra-ui/button';
 import { DeleteIcon } from '@chakra-ui/icons';
+import { Collapse } from '@chakra-ui/transition';
+import Comments from './Comments/Comments';
 
 const Feeds = (props) => {
   const dispatch = useDispatch();
@@ -20,8 +23,19 @@ const Feeds = (props) => {
 
   const { isUserFeeds = false } = props;
 
+  const [showComments, setShowComments] = useState(null);
+
   const handleLikeDislike = (postId, previousStatus) => {
     dispatch(likeDislikeThunk({ postId, status: previousStatus === false ? 'like' : 'dislike' }));
+  };
+
+  const handleShowComments = (postId) => {
+    if (postId === showComments) {
+      setShowComments(null);
+    } else {
+      setShowComments(postId);
+      dispatch(getAllCommentsThunk(postId));
+    }
   };
 
   const handleDeletePost = (postId) => {
@@ -40,7 +54,6 @@ const Feeds = (props) => {
     <Flex p={4} pt={0} direction="column" alignItems="flex-end" gap={4}>
       {posts?.map((_item) => (
         <Box w="100%" p={4} pb={0} bg="#fff" borderRadius={8} boxShadow="sm" key={_item?._id}>
-          {console.log(_item)}
           <Box pb={2} mb={0.5} borderBottom="1px" borderColor="#dfe6e9" position="relative">
             {_item?.postedBy?.id === userInfo?.id && (
               <Button
@@ -116,10 +129,15 @@ const Feeds = (props) => {
               cursor="pointer"
               fontSize="sm"
               color="#636e72"
+              onClick={() => handleShowComments(_item?._id)}
             >
               Comment ({_item?.totalComments})
             </Button>
           </Flex>
+
+          <Collapse in={showComments === _item?._id}>
+            <Comments postId={showComments} />
+          </Collapse>
         </Box>
       ))}
     </Flex>

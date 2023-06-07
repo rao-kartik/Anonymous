@@ -11,12 +11,12 @@ code {
 }
 
 .hide-scrollbar {
-  .scroll-container::-webkit-scrollbar {
+  &::-webkit-scrollbar {
     width: 0.4rem;
     background-color: transparent;
   }
 
-  .scroll-container::-webkit-scrollbar-thumb {
+  &::-webkit-scrollbar-thumb {
     background-color: transparent;
   }
 }

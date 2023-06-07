@@ -2,9 +2,11 @@ import { createSlice } from '@reduxjs/toolkit';
 import {
   deletePostThunk,
   editPostThunk,
+  getAllCommentsThunk,
   getAllPostsThunk,
   getAllPostsUserThunk,
   likeDislikeThunk,
+  newCommentThunk,
   newPostThunk,
 } from './asyncThunks';
 import { REDUCERS } from '../../constants';
@@ -107,7 +109,6 @@ const homeSlice = createSlice({
       .addCase(likeDislikeThunk.fulfilled, (state, action) => {
         state.loader.likeDislike = false;
         state.error.likeDislike = false;
-        console.log(action.payload);
         state.posts = state.posts.map((_item) =>
           _item?._id === action.payload?.postId
             ? {
@@ -122,6 +123,46 @@ const homeSlice = createSlice({
       .addCase(likeDislikeThunk.rejected, (state) => {
         state.loader.likeDislike = false;
         state.error.likeDislike = true;
+      })
+      // get all comments
+      .addCase(getAllCommentsThunk.pending, (state) => {
+        state.loader.getComments = true;
+        state.error.getComments = false;
+        state.comments = null;
+      })
+      .addCase(getAllCommentsThunk.fulfilled, (state, action) => {
+        state.loader.getComments = false;
+        state.error.getComments = false;
+        state.comments = action.payload?.comments;
+      })
+      .addCase(getAllCommentsThunk.rejected, (state) => {
+        state.loader.getComments = false;
+        state.error.getComments = true;
+        state.comments = null;
+      })
+      // new Comment
+      .addCase(newCommentThunk.pending, (state) => {
+        state.loader.getComments = true;
+        state.error.getComments = false;
+      })
+      .addCase(newCommentThunk.fulfilled, (state, action) => {
+        state.loader.getComments = false;
+        state.error.getComments = false;
+        console.log(action.payload?.comment);
+        state.comments = [action.payload?.comment, ...(state?.comments || [])];
+        state.posts = state.posts.map((_item) =>
+          _item?._id === action.payload?.comment?.post
+            ? {
+                ..._item,
+                totalComments: _item?.totalComments + 1,
+              }
+            : _item
+        );
+      })
+      .addCase(newCommentThunk.rejected, (state) => {
+        state.loader.getComments = false;
+        state.error.getComments = true;
+        state.comments = null;
       });
   },
 });
