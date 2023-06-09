@@ -9,6 +9,8 @@ import { Input } from '@chakra-ui/input';
 import { addressPrefix } from '../../utils/common';
 import { sendMessageThunk } from './chatAsynkThunks';
 
+import styles from './chat.module.scss';
+
 const Chat = ({ receiver, onClose }) => {
   const dispatch = useDispatch();
   const { loader } = useSelector((state) => state[REDUCERS.chat]);
@@ -41,11 +43,11 @@ const Chat = ({ receiver, onClose }) => {
       h={500}
       bg="#fff"
       position="fixed"
-      left={4}
+      right={4}
       bottom={4}
       borderRadius={20}
-      boxShadow="md"
       overflow="hidden"
+      className={styles['chat-top-wrapper']}
     >
       <Box position={'relative'} p={4} boxShadow="base">
         <Text fontWeight={600}>Chat</Text>

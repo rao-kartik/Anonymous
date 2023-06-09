@@ -11,6 +11,7 @@ import Chat from '../Chat/Chat';
 import FollowersFollowing from '../../Components/Home/FollowersFoloowing/FollowersFollowing';
 import { fetchConversationListThunk, getPushUserThunk } from '../Chat/chatAsynkThunks';
 import { REDUCERS } from '../../constants';
+import ChatMessages from '../../Components/Chat/ChatMessages/ChatMessages';
 
 const boxWidth = 25;
 const boxPadding = 6;
@@ -48,19 +49,6 @@ const Home = () => {
       >
         <Header />
 
-        <Box w={`${boxWidth}%`} h="100%">
-          <Text>Profile</Text>
-        </Box>
-        <Box
-          w={`calc(100% - ${2 * boxWidth}%)`}
-          h="100%"
-          overflowY="auto"
-          className="hide-scrollbar"
-        >
-          <WritePost />
-
-          <Feeds />
-        </Box>
         <Flex
           w={`${boxWidth}%`}
           h="100%"
@@ -71,6 +59,29 @@ const Home = () => {
           gap={4}
         >
           <FollowersFollowing handleOpenChat={handleOpenChat} />
+        </Flex>
+
+        <Box
+          w={`calc(100% - ${2 * boxWidth}%)`}
+          h="100%"
+          overflowY="auto"
+          className="hide-scrollbar"
+        >
+          <WritePost />
+
+          <Feeds />
+        </Box>
+
+        <Flex
+          w={`${boxWidth}%`}
+          h="100%"
+          bg="#fff"
+          p={4}
+          borderRadius={8}
+          flexDirection="column"
+          gap={4}
+        >
+          <ChatMessages handleOpenChat={handleOpenChat} />
         </Flex>
       </Flex>
 
