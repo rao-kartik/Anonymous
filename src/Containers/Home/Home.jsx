@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
 import { Box, Flex, Text } from '@chakra-ui/layout';
 
 import Header from '../../Components/Common/Header/Header';
@@ -8,14 +9,25 @@ import WritePost from '../../Components/Home/WritePost/WritePost';
 import Feeds from '../../Components/Home/Feeds/Feeds';
 import Chat from '../Chat/Chat';
 import FollowersFollowing from '../../Components/Home/FollowersFoloowing/FollowersFollowing';
+import { getPushUserThunk } from '../Chat/chatAsynkThunks';
+import { REDUCERS } from '../../constants';
+
 const boxWidth = 25;
 const boxPadding = 6;
 
 const Home = () => {
+  const dispatch = useDispatch();
+
+  const { pushUser } = useSelector((state) => state[REDUCERS.chat]);
+
   const [chatId, setChatId] = useState(null);
 
   const handleOpenChat = (walletAddress) => {
     if (!chatId) setChatId(walletAddress);
+
+    if (!pushUser) {
+      dispatch(getPushUserThunk());
+    }
   };
 
   const handleCloseChat = () => {
@@ -60,7 +72,7 @@ const Home = () => {
         </Flex>
       </Flex>
 
-      {chatId && <Chat user={chatId} onClose={handleCloseChat} />}
+      {chatId && <Chat receiver={chatId} onClose={handleCloseChat} />}
     </>
   );
 };

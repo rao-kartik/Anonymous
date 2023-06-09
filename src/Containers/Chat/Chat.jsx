@@ -1,6 +1,5 @@
-import React, { useEffect, useState } from 'react';
-import { useSelector } from 'react-redux';
-import { ethers } from 'ethers';
+import React, { useState } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
 import { Box, Flex, Text } from '@chakra-ui/layout';
 
 import { REDUCERS } from '../../constants';
@@ -8,9 +7,9 @@ import { Button, IconButton } from '@chakra-ui/button';
 import { SmallCloseIcon } from '@chakra-ui/icons';
 import { Input } from '@chakra-ui/input';
 
-const Chat = ({ user, onClose }) => {
-  const { userInfo } = useSelector((state) => state[REDUCERS.common]);
-  const [signer, setSigner] = useState(null);
+const Chat = ({ receiver, onClose }) => {
+  const { pushUser, loader, key } = useSelector((state) => state[REDUCERS.chat]);
+  // console.log(pushUser);
 
   const [msgInput, setMsgInput] = useState('');
 
@@ -26,18 +25,6 @@ const Chat = ({ user, onClose }) => {
     setMsgInput('');
   };
 
-  const connectToWeb3 = async () => {
-    const provider = new ethers.providers.Web3Provider(window.ethereum);
-    const accounts = await provider.listAccounts();
-
-    const _signer = provider.getSigner(accounts[0]);
-    setSigner(accounts[0]);
-  };
-
-  useEffect(() => {
-    connectToWeb3();
-  }, []);
-
   return (
     <Box
       w={350}
@@ -50,7 +37,7 @@ const Chat = ({ user, onClose }) => {
       boxShadow="md"
       overflow="hidden"
     >
-      <Box position={'relative'} p={4} boxShadow="md">
+      <Box position={'relative'} p={4} boxShadow="base">
         <Text fontWeight={600}>Chat</Text>
         <IconButton
           p={0}
@@ -70,10 +57,12 @@ const Chat = ({ user, onClose }) => {
       <Flex h="74.5%" overflowY="auto" p={4}></Flex>
 
       <form onClick={handleSend}>
-        <Flex position={'relative'} p={4} boxShadow="md" gap={4}>
+        <Flex position={'relative'} p={4} boxShadow="xs" gap={4}>
           <Input onChange={handleMsgInputChange} value={msgInput} />
 
-          <Button type="submit">Send</Button>
+          <Button type="submit" disabled={!loader.fetchingUser}>
+            Send
+          </Button>
         </Flex>
       </form>
     </Box>

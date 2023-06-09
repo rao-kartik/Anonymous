@@ -6,4 +6,5 @@ export const PATHS = {
 export const REDUCERS = {
   common: 'commonReducer',
   home: 'homeReducer',
+  chat: 'chatReducer',
 };
