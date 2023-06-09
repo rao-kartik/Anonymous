@@ -80,6 +80,29 @@ export const getPushUserThunk = createAsyncThunk('GET_PUSH_USER', async (_, othe
   }
 });
 
+export const approveChatRequestThunk = createAsyncThunk(
+  'APPROVE_CHAT_REQUEST',
+  async (payload, others) => {
+    try {
+      const { signer, account } = await getEtherSigner();
+      const { key } = others.getState()[REDUCERS.chat];
+
+      const _user = await PushAPI.chat.approve({
+        signer,
+        env: ENV,
+        pgpPrivateKey: key,
+        messageType: 'Text',
+        senderAddress: payload,
+        account,
+      });
+
+      return _user;
+    } catch (err) {
+      throw err?.response?.data || err;
+    }
+  }
+);
+
 export const sendMessageThunk = createAsyncThunk('SEND_MESSAGE', async (payload, others) => {
   try {
     const { signer } = await getEtherSigner();
@@ -105,15 +128,19 @@ export const fetchConversationListThunk = createAsyncThunk(
     try {
       const { pushUser, key } = others.getState()[REDUCERS.chat];
 
-      const conversationHash = await PushAPI.chat.conversationHash({
-        account: pushUser?.wallets,
-        conversationId: addressPrefix + payload,
-        env: ENV,
-      });
+      let conversationHash = payload?.conversationHash;
 
-      if (!conversationHash.threadHash) throw new Error('Conversation not found');
+      if (!conversationHash?.threadHash) {
+        conversationHash = await PushAPI.chat.conversationHash({
+          account: pushUser?.did,
+          conversationId: addressPrefix + payload?.walletAddress,
+          env: ENV,
+        });
 
-      const conversationList = await PushAPI.chat.latest({
+        if (!conversationHash.threadHash) throw new Error('Conversation not found');
+      }
+
+      const conversationList = await PushAPI.chat.history({
         threadhash: conversationHash.threadHash,
         account: pushUser?.wallets,
         toDecrypt: true,
@@ -122,29 +149,6 @@ export const fetchConversationListThunk = createAsyncThunk(
       });
 
       return conversationList;
-    } catch (err) {
-      throw err?.response?.data || err;
-    }
-  }
-);
-
-export const approveChatRequestThunk = createAsyncThunk(
-  'APPROVE_CHAT_REQUEST',
-  async (payload, others) => {
-    try {
-      const { signer, account } = await getEtherSigner();
-      const { key } = others.getState()[REDUCERS.chat];
-
-      const _user = await PushAPI.chat.approve({
-        signer,
-        env: ENV,
-        pgpPrivateKey: key,
-        messageType: 'Text',
-        senderAddress: payload,
-        account,
-      });
-
-      return _user;
     } catch (err) {
       throw err?.response?.data || err;
     }

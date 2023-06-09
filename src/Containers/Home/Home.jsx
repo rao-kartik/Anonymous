@@ -23,10 +23,10 @@ const Home = () => {
 
   const [chatId, setChatId] = useState(null);
 
-  const handleOpenChat = (walletAddress) => {
-    if (!chatId) setChatId(walletAddress);
+  const handleOpenChat = ({ walletAddress, conversationHash, source }) => {
+    if (!chatId) setChatId({ walletAddress, source });
 
-    dispatch(fetchConversationListThunk(walletAddress));
+    dispatch(fetchConversationListThunk({ walletAddress, conversationHash }));
   };
 
   const handleCloseChat = () => {
@@ -85,7 +85,9 @@ const Home = () => {
         </Flex>
       </Flex>
 
-      {chatId && <Chat receiver={chatId} onClose={handleCloseChat} />}
+      {chatId?.walletAddress && (
+        <Chat receiver={chatId?.walletAddress} onClose={handleCloseChat} source={chatId?.source} />
+      )}
     </>
   );
 };

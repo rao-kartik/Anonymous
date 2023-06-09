@@ -30,6 +30,7 @@ const followerText = {
 };
 
 const ChatMessages = (props) => {
+  const { userInfo } = useSelector((state) => state[REDUCERS.common]);
   const { chatRequests, chatsList } = useSelector((state) => state[REDUCERS.chat]);
 
   const { handleOpenChat } = props;
@@ -45,17 +46,29 @@ const ChatMessages = (props) => {
         >
           {chatsList?.length === 0
             ? 'No Chat Started'
-            : chatsList?.map((_chat) => (
-                <Flex
-                  {...followersWrapper}
-                  onClick={() => handleOpenChat(_chat?.intentSentBy)}
-                  key={_chat?.chatId}
-                >
-                  <Text {...followerText}>{_chat?.intentSentBy?.split(addressPrefix)[1]}</Text>
+            : chatsList?.map((_chat) => {
+                const sender = _chat?.msg?.toDID?.includes(userInfo?.walletAddress)
+                  ? _chat?.msg?.fromDID
+                  : _chat?.msg?.toDID;
 
-                  <EmailIcon _hover={{ cursor: 'pointer' }} />
-                </Flex>
-              ))}
+                return (
+                  <Flex
+                    {...followersWrapper}
+                    onClick={() =>
+                      handleOpenChat({
+                        walletAddress: sender,
+                        conversationHash: { threadHash: _chat?.threadhash },
+                        source: 'chat',
+                      })
+                    }
+                    key={_chat?.chatId}
+                  >
+                    <Text {...followerText}>{sender?.split(addressPrefix)[1]}</Text>
+
+                    <EmailIcon _hover={{ cursor: 'pointer' }} />
+                  </Flex>
+                );
+              })}
         </Flex>
       </Box>
 
@@ -73,10 +86,16 @@ const ChatMessages = (props) => {
             : chatRequests?.map((_chatRequest) => (
                 <Flex
                   {...followersWrapper}
-                  onClick={() => handleOpenChat(_chatRequest?.msg?.toDID)}
+                  onClick={() =>
+                    handleOpenChat({
+                      walletAddress: _chatRequest?.did,
+                      conversationHash: { threadHash: _chatRequest?.threadhash },
+                      source: 'chatRequest',
+                    })
+                  }
                   key={_chatRequest?.chatId}
                 >
-                  <Text {...followerText}>{_chatRequest?.msg?.toDID?.split(addressPrefix)[1]}</Text>
+                  <Text {...followerText}>{_chatRequest?.did?.split(addressPrefix)[1]}</Text>
 
                   <EmailIcon _hover={{ cursor: 'pointer' }} />
                 </Flex>

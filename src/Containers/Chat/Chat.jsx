@@ -7,14 +7,16 @@ import { Button, IconButton } from '@chakra-ui/button';
 import { SmallCloseIcon } from '@chakra-ui/icons';
 import { Input } from '@chakra-ui/input';
 import { addressPrefix } from '../../utils/common';
-import { sendMessageThunk } from './chatAsynkThunks';
+import { approveChatRequestThunk, sendMessageThunk } from './chatAsynkThunks';
 
 import styles from './chat.module.scss';
 
-const Chat = ({ receiver, onClose }) => {
+const chatJoiner = '-$$a_n&&-';
+
+const Chat = ({ receiver, onClose, source }) => {
   const dispatch = useDispatch();
-  const { loader } = useSelector((state) => state[REDUCERS.chat]);
-  // console.log(pushUser);
+  const { loader, conversationList } = useSelector((state) => state[REDUCERS.chat]);
+  console.log(conversationList);
 
   const [msgInput, setMsgInput] = useState('');
 
@@ -27,12 +29,18 @@ const Chat = ({ receiver, onClose }) => {
   const handleSend = (e) => {
     e.preventDefault();
 
-    const payload = {
-      messageContent: msgInput,
-      receiverAddress: addressPrefix + receiver,
-    };
+    if (msgInput?.length > 0) {
+      const payload = {
+        messageContent: msgInput,
+        receiverAddress: receiver?.includes(addressPrefix) ? receiver : addressPrefix + receiver,
+      };
 
-    dispatch(sendMessageThunk(payload));
+      if (source === 'chatRequest') {
+        dispatch(approveChatRequestThunk(receiver));
+      }
+
+      dispatch(sendMessageThunk(payload));
+    }
 
     setMsgInput('');
   };
@@ -66,7 +74,33 @@ const Chat = ({ receiver, onClose }) => {
         </IconButton>
       </Box>
 
-      <Flex h="74.5%" overflowY="auto" p={4}></Flex>
+      <Flex h="74.5%" overflowY="auto" p={4} flexDirection="column" gap={4}>
+        {conversationList?.map((_message) => {
+          const isReceiver = receiver?.includes(addressPrefix)
+            ? _message?.toDID === receiver
+            : _message?.toDID?.split(addressPrefix)?.[1] === receiver;
+
+          return (
+            <React.Fragment key={_message?.chatId}>
+              {_message?.messageContent !== '' && (
+                <Flex w="100%" flexDirection={isReceiver ? 'row' : 'row-reverse'}>
+                  <Box
+                    py={1}
+                    px={3}
+                    maxW="80%"
+                    bg={isReceiver ? '#636e72' : '#00b894'}
+                    rounded={12}
+                    fontSize="sm"
+                    color={isReceiver ? '#fff' : '#fff'}
+                  >
+                    {_message?.messageContent}
+                  </Box>
+                </Flex>
+              )}
+            </React.Fragment>
+          );
+        })}
+      </Flex>
 
       <form onClick={handleSend}>
         <Flex position={'relative'} p={4} boxShadow="xs" gap={4}>

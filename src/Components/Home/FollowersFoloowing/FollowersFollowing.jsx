@@ -47,7 +47,7 @@ const FollowersFollowing = ({ handleOpenChat }) => {
             : userInfo?.followers?.map((_follower) => (
                 <Flex
                   {...followersWrapper}
-                  onClick={() => handleOpenChat(_follower?.walletAddress)}
+                  onClick={() => handleOpenChat({ walletAddress: _follower?.walletAddress })}
                   key={_follower?.id}
                 >
                   <Text {...followerText}>{_follower?.walletAddress}</Text>
@@ -72,7 +72,7 @@ const FollowersFollowing = ({ handleOpenChat }) => {
             : userInfo?.following?.map((_following) => (
                 <Flex
                   {...followersWrapper}
-                  onClick={() => handleOpenChat(_following?.walletAddress)}
+                  onClick={() => handleOpenChat({ walletAddress: _following?.walletAddress })}
                   key={_following?.id}
                 >
                   <Text {...followerText}>{_following?.walletAddress}</Text>
