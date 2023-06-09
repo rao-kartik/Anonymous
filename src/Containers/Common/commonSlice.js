@@ -16,7 +16,14 @@ const initialState = {
 const commonSlice = createSlice({
   name: REDUCERS.common,
   initialState,
-  reducers: {},
+  reducers: {
+    setCommonReducer: (state, action) => {
+      return {
+        ...state,
+        ...action.payload,
+      };
+    },
+  },
   extraReducers: (builder) => {
     builder
       .addCase(authenticateUserThunk.pending, (state) => {
@@ -48,5 +55,7 @@ const commonSlice = createSlice({
       });
   },
 });
+
+export const { setCommonReducer } = commonSlice.actions;
 
 export default commonSlice.reducer;

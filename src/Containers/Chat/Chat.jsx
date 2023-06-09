@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { Box, Flex, Text } from '@chakra-ui/layout';
 
@@ -11,12 +11,18 @@ import { approveChatRequestThunk, sendMessageThunk } from './chatAsynkThunks';
 
 import styles from './chat.module.scss';
 import { Spinner } from '@chakra-ui/spinner';
+import { connectToSocket } from '../../utils/socket';
+import { EVENTS } from '@pushprotocol/socket';
+import { setConversationList } from './chatSlice';
 
 const Chat = ({ receiver, onClose, source }) => {
   const dispatch = useDispatch();
   const { loader, conversationList } = useSelector((state) => state[REDUCERS.chat]);
+  const { userInfo } = useSelector((state) => state[REDUCERS.common]);
 
   const [msgInput, setMsgInput] = useState('');
+  const [socketConnect, setSocketConnect] = useState(null);
+  const [connected, setConnected] = useState(false);
 
   const handleMsgInputChange = (e) => {
     const { value } = e.target;
@@ -43,6 +49,54 @@ const Chat = ({ receiver, onClose, source }) => {
     setMsgInput('');
   };
 
+  const addSocketEvents = () => {
+    socketConnect?.on(EVENTS.CONNECT, () => {
+      setConnected(true);
+    });
+
+    socketConnect?.on(EVENTS.DISCONNECT, () => {
+      setConnected(false);
+    });
+
+    socketConnect?.on(EVENTS.CHAT_RECEIVED_MESSAGE, (message) => {
+      console.log(message);
+      dispatch(setConversationList(message));
+    });
+  };
+
+  const removeSocketEvents = () => {
+    socketConnect?.off(EVENTS.CONNECT);
+    socketConnect?.off(EVENTS.DISCONNECT);
+  };
+
+  useEffect(() => {
+    if (socketConnect) {
+      addSocketEvents();
+    }
+    return () => {
+      removeSocketEvents();
+    };
+  }, [socketConnect]);
+
+  useEffect(() => {
+    if (!socketConnect) {
+      setSocketConnect(
+        connectToSocket(
+          userInfo?.walletAddress?.includes(addressPrefix)
+            ? userInfo?.walletAddress
+            : addressPrefix + userInfo?.walletAddress,
+          'chat'
+        )
+      );
+    }
+
+    return () => {
+      if (socketConnect) {
+        socketConnect.disconnect();
+      }
+    };
+  }, []);
+
   return (
     <Box
       w={350}
@@ -56,7 +110,9 @@ const Chat = ({ receiver, onClose, source }) => {
       className={styles['chat-top-wrapper']}
     >
       <Box position={'relative'} p={4} boxShadow="base">
-        <Text fontWeight={600}>Chat</Text>
+        <Text className={styles.title} fontWeight={600} position="relative">
+          Chat
+        </Text>
         <IconButton
           p={0}
           w={6}

@@ -1,4 +1,4 @@
-import React, { memo, useEffect, useState } from 'react';
+import React, { memo, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { Box, Flex } from '@chakra-ui/layout';
 import { useToast } from '@chakra-ui/toast';
@@ -46,10 +46,6 @@ const Home = () => {
   const handleCloseChat = () => {
     setChatId(null);
   };
-
-  useEffect(() => {
-    if (!pushUser) dispatch(getPushUserThunk());
-  }, []);
 
   return (
     <>

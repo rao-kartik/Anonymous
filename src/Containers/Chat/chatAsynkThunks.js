@@ -5,7 +5,7 @@ import { getEtherSigner } from '../../utils/ether';
 import { REDUCERS } from '../../constants';
 import { addressPrefix } from '../../utils/common';
 
-const ENV = 'staging';
+import { ENV } from '../../utils/socket';
 
 export const fetchAllChatsThunk = createAsyncThunk('FETHC_ALL_CHATS', async (payload) => {
   try {

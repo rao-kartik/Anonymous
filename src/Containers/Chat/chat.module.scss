@@ -1,3 +1,17 @@
 .chat-top-wrapper {
   box-shadow: 0 0 10px 1px #b2bec3;
+
+  .title {
+    &::before {
+      content: '';
+      width: 4px;
+      height: 4;
+      border-radius: 50%;
+      position: absolute;
+      top: 0;
+      right: 0;
+      z-index: 1;
+      background: red;
+    }
+  }
 }
