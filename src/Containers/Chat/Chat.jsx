@@ -6,9 +6,12 @@ import { REDUCERS } from '../../constants';
 import { Button, IconButton } from '@chakra-ui/button';
 import { SmallCloseIcon } from '@chakra-ui/icons';
 import { Input } from '@chakra-ui/input';
+import { addressPrefix } from '../../utils/common';
+import { sendMessageThunk } from './chatAsynkThunks';
 
 const Chat = ({ receiver, onClose }) => {
-  const { pushUser, loader, key } = useSelector((state) => state[REDUCERS.chat]);
+  const dispatch = useDispatch();
+  const { loader } = useSelector((state) => state[REDUCERS.chat]);
   // console.log(pushUser);
 
   const [msgInput, setMsgInput] = useState('');
@@ -21,6 +24,13 @@ const Chat = ({ receiver, onClose }) => {
 
   const handleSend = (e) => {
     e.preventDefault();
+
+    const payload = {
+      messageContent: msgInput,
+      receiverAddress: addressPrefix + receiver,
+    };
+
+    dispatch(sendMessageThunk(payload));
 
     setMsgInput('');
   };

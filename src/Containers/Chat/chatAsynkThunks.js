@@ -3,6 +3,7 @@ import * as PushAPI from '@pushprotocol/restapi';
 
 import { getEtherSigner } from '../../utils/ether';
 import { REDUCERS } from '../../constants';
+import { addressPrefix } from '../../utils/common';
 
 const ENV = 'staging';
 
@@ -32,7 +33,6 @@ export const fetchAllChatRequestsThunk = createAsyncThunk(
         pgpPrivateKey: payload?.key,
       });
 
-      console.log(chatRequests);
       return chatRequests;
     } catch (err) {
       throw err?.response?.data || err;
@@ -68,7 +68,7 @@ export const getPushUserThunk = createAsyncThunk('GET_PUSH_USER', async (_, othe
     const { account } = await getEtherSigner();
 
     const _user = await PushAPI.user.get({
-      account: 'eip155:' + account,
+      account: addressPrefix + account,
       env: ENV,
     });
 
@@ -80,13 +80,17 @@ export const getPushUserThunk = createAsyncThunk('GET_PUSH_USER', async (_, othe
   }
 });
 
-export const sendMessageThunk = createAsyncThunk('SEND_MESSAGE', async (payload) => {
+export const sendMessageThunk = createAsyncThunk('SEND_MESSAGE', async (payload, others) => {
   try {
-    const { account } = await getEtherSigner();
+    const { signer } = await getEtherSigner();
+    const { key } = others.getState()[REDUCERS.chat];
 
-    const _user = await PushAPI.user.get({
-      account: 'eip155:' + account,
+    const _user = await PushAPI.chat.send({
+      signer,
       env: ENV,
+      pgpPrivateKey: key,
+      messageType: 'Text',
+      ...payload,
     });
 
     return _user;
@@ -99,15 +103,48 @@ export const fetchConversationListThunk = createAsyncThunk(
   'FETCH_CONVERSATION_LIST',
   async (payload, others) => {
     try {
-      const { pushUser } = others.getState()[REDUCERS.chat];
+      const { pushUser, key } = others.getState()[REDUCERS.chat];
 
-      const conversationList = await PushAPI.chat.conversationHash({
+      const conversationHash = await PushAPI.chat.conversationHash({
         account: pushUser?.wallets,
-        conversationId: 'eip155:' + payload,
+        conversationId: addressPrefix + payload,
         env: ENV,
       });
 
-      return conversationList?.threadHash;
+      if (!conversationHash.threadHash) throw new Error('Conversation not found');
+
+      const conversationList = await PushAPI.chat.latest({
+        threadhash: conversationHash.threadHash,
+        account: pushUser?.wallets,
+        toDecrypt: true,
+        pgpPrivateKey: key,
+        env: ENV,
+      });
+
+      return conversationList;
+    } catch (err) {
+      throw err?.response?.data || err;
+    }
+  }
+);
+
+export const approveChatRequestThunk = createAsyncThunk(
+  'APPROVE_CHAT_REQUEST',
+  async (payload, others) => {
+    try {
+      const { signer, account } = await getEtherSigner();
+      const { key } = others.getState()[REDUCERS.chat];
+
+      const _user = await PushAPI.chat.approve({
+        signer,
+        env: ENV,
+        pgpPrivateKey: key,
+        messageType: 'Text',
+        senderAddress: payload,
+        account,
+      });
+
+      return _user;
     } catch (err) {
       throw err?.response?.data || err;
     }
