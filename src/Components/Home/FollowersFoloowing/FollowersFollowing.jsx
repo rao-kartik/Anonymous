@@ -74,10 +74,11 @@ const FollowersFollowing = ({ handleOpenChat }) => {
                   {...followersWrapper}
                   onClick={() => handleOpenChat({ walletAddress: _following?.walletAddress })}
                   key={_following?.id}
+                  _hover={{ cursor: 'pointer' }}
                 >
                   <Text {...followerText}>{_following?.walletAddress}</Text>
 
-                  <EmailIcon _hover={{ cursor: 'pointer' }} />
+                  <EmailIcon />
                 </Flex>
               ))}
         </Flex>

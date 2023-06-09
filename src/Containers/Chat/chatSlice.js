@@ -77,13 +77,16 @@ const chatSlice = createSlice({
       })
       //fetch conversation list
       .addCase(fetchConversationListThunk.pending, (state) => {
+        state.loader.conversationList = true;
         state.conversationList = null;
       })
       .addCase(fetchConversationListThunk.fulfilled, (state, action) => {
-        state.conversationList = action.payload?.reverse();
+        state.loader.conversationList = false;
+        state.conversationList = action.payload;
       })
       .addCase(fetchConversationListThunk.rejected, (state) => {
         state.conversationList = null;
+        state.loader.conversationList = false;
       });
   },
 });

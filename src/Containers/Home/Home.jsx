@@ -1,6 +1,7 @@
 import React, { memo, useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { Box, Flex, Text } from '@chakra-ui/layout';
+import { Box, Flex } from '@chakra-ui/layout';
+import { useToast } from '@chakra-ui/toast';
 
 import Header from '../../Components/Common/Header/Header';
 
@@ -18,15 +19,28 @@ const boxPadding = 6;
 
 const Home = () => {
   const dispatch = useDispatch();
+  const toast = useToast();
 
-  const { pushUser } = useSelector((state) => state[REDUCERS.chat]);
+  const { pushUser, key } = useSelector((state) => state[REDUCERS.chat]);
 
   const [chatId, setChatId] = useState(null);
 
   const handleOpenChat = ({ walletAddress, conversationHash, source }) => {
-    if (!chatId) setChatId({ walletAddress, source });
+    if (pushUser && key) {
+      if (!chatId) setChatId({ walletAddress, source });
 
-    dispatch(fetchConversationListThunk({ walletAddress, conversationHash }));
+      dispatch(fetchConversationListThunk({ walletAddress, conversationHash }));
+    } else {
+      toast({
+        title: 'Push not authenticated',
+        status: 'error',
+        duration: 2000,
+        isClosable: true,
+        position: 'top-right',
+      });
+
+      dispatch(getPushUserThunk());
+    }
   };
 
   const handleCloseChat = () => {

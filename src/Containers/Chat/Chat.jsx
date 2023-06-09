@@ -10,13 +10,11 @@ import { addressPrefix } from '../../utils/common';
 import { approveChatRequestThunk, sendMessageThunk } from './chatAsynkThunks';
 
 import styles from './chat.module.scss';
-
-const chatJoiner = '-$$a_n&&-';
+import { Spinner } from '@chakra-ui/spinner';
 
 const Chat = ({ receiver, onClose, source }) => {
   const dispatch = useDispatch();
   const { loader, conversationList } = useSelector((state) => state[REDUCERS.chat]);
-  console.log(conversationList);
 
   const [msgInput, setMsgInput] = useState('');
 
@@ -74,32 +72,45 @@ const Chat = ({ receiver, onClose, source }) => {
         </IconButton>
       </Box>
 
-      <Flex h="74.5%" overflowY="auto" p={4} flexDirection="column" gap={4}>
-        {conversationList?.map((_message) => {
-          const isReceiver = receiver?.includes(addressPrefix)
-            ? _message?.toDID === receiver
-            : _message?.toDID?.split(addressPrefix)?.[1] === receiver;
+      <Flex
+        h="74.5%"
+        overflowY="auto"
+        p={4}
+        flexDirection="column-reverse"
+        gap={4}
+        {...(loader?.conversationList
+          ? { justifyContent: 'center', alignItems: 'center' }
+          : { justifyContent: 'flex-start' })}
+      >
+        {loader?.conversationList ? (
+          <Spinner speed="1s" emptyColor="#b2bec3" color="#ff7675" size="lg" thickness="4px" />
+        ) : (
+          conversationList?.map((_message) => {
+            const isReceiver = receiver?.includes(addressPrefix)
+              ? _message?.fromDID === receiver
+              : _message?.fromDID?.split(addressPrefix)?.[1] === receiver;
 
-          return (
-            <React.Fragment key={_message?.chatId}>
-              {_message?.messageContent !== '' && (
-                <Flex w="100%" flexDirection={isReceiver ? 'row' : 'row-reverse'}>
-                  <Box
-                    py={1}
-                    px={3}
-                    maxW="80%"
-                    bg={isReceiver ? '#636e72' : '#00b894'}
-                    rounded={12}
-                    fontSize="sm"
-                    color={isReceiver ? '#fff' : '#fff'}
-                  >
-                    {_message?.messageContent}
-                  </Box>
-                </Flex>
-              )}
-            </React.Fragment>
-          );
-        })}
+            return (
+              <React.Fragment key={_message?.chatId}>
+                {_message?.messageContent !== '' && (
+                  <Flex w="100%" flexDirection={isReceiver ? 'row' : 'row-reverse'}>
+                    <Box
+                      py={1}
+                      px={3}
+                      maxW="80%"
+                      bg={isReceiver ? '#636e72' : '#00b894'}
+                      rounded={12}
+                      fontSize="sm"
+                      color={isReceiver ? '#fff' : '#fff'}
+                    >
+                      {_message?.messageContent}
+                    </Box>
+                  </Flex>
+                )}
+              </React.Fragment>
+            );
+          })
+        )}
       </Flex>
 
       <form onClick={handleSend}>
