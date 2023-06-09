@@ -1,7 +1,13 @@
 import { createSlice } from '@reduxjs/toolkit';
 
 import { REDUCERS } from '../../constants';
-import { decryptDPGKeyThunk, getPushUserThunk } from './chatAsynkThunks';
+import {
+  decryptDPGKeyThunk,
+  fetchAllChatRequestsThunk,
+  fetchAllChatsThunk,
+  fetchConversationListThunk,
+  getPushUserThunk,
+} from './chatAsynkThunks';
 
 const initialState = {
   loader: {},
@@ -48,6 +54,36 @@ const chatSlice = createSlice({
       })
       .addCase(decryptDPGKeyThunk.rejected, (state) => {
         state.key = null;
+      })
+      //fetch all chats
+      .addCase(fetchAllChatsThunk.pending, (state) => {
+        state.chatsList = null;
+      })
+      .addCase(fetchAllChatsThunk.fulfilled, (state, action) => {
+        state.chatsList = action.payload;
+      })
+      .addCase(fetchAllChatsThunk.rejected, (state) => {
+        state.chatsList = null;
+      })
+      //fetch all chat requests
+      .addCase(fetchAllChatRequestsThunk.pending, (state) => {
+        state.chatRequests = null;
+      })
+      .addCase(fetchAllChatRequestsThunk.fulfilled, (state, action) => {
+        state.chatRequests = action.payload;
+      })
+      .addCase(fetchAllChatRequestsThunk.rejected, (state) => {
+        state.chatRequests = null;
+      })
+      //fetch conversation list
+      .addCase(fetchConversationListThunk.pending, (state) => {
+        state.chatRequests = null;
+      })
+      .addCase(fetchConversationListThunk.fulfilled, (state, action) => {
+        state.chatRequests = action.payload;
+      })
+      .addCase(fetchConversationListThunk.rejected, (state) => {
+        state.chatRequests = null;
       });
   },
 });

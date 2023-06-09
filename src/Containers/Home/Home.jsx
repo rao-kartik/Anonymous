@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { memo, useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { Box, Flex, Text } from '@chakra-ui/layout';
 
@@ -9,7 +9,7 @@ import WritePost from '../../Components/Home/WritePost/WritePost';
 import Feeds from '../../Components/Home/Feeds/Feeds';
 import Chat from '../Chat/Chat';
 import FollowersFollowing from '../../Components/Home/FollowersFoloowing/FollowersFollowing';
-import { getPushUserThunk } from '../Chat/chatAsynkThunks';
+import { fetchConversationListThunk, getPushUserThunk } from '../Chat/chatAsynkThunks';
 import { REDUCERS } from '../../constants';
 
 const boxWidth = 25;
@@ -25,14 +25,16 @@ const Home = () => {
   const handleOpenChat = (walletAddress) => {
     if (!chatId) setChatId(walletAddress);
 
-    if (!pushUser) {
-      dispatch(getPushUserThunk());
-    }
+    dispatch(fetchConversationListThunk(walletAddress));
   };
 
   const handleCloseChat = () => {
     setChatId(null);
   };
+
+  useEffect(() => {
+    if (!pushUser) dispatch(getPushUserThunk());
+  }, []);
 
   return (
     <>
@@ -77,4 +79,4 @@ const Home = () => {
   );
 };
 
-export default Home;
+export default memo(Home);
