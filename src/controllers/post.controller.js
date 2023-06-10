@@ -16,6 +16,7 @@ const allPosts = async (req, res) => {
       formattedPosts[i] = {
         ...posts[i],
         postedBy: {
+          id: posts[i]?.postedBy?._id,
           userName: posts[i]?.postedBy?.userName,
           walletAddress: posts[i]?.postedBy?.walletAddress,
         },
@@ -50,6 +51,7 @@ const allPostsOfUser = async (req, res) => {
       formattedPosts[i] = {
         ...posts[i],
         postedBy: {
+          id: posts[i]?.postedBy?._id,
           userName: posts[i]?.postedBy?.userName,
           walletAddress: posts[i]?.postedBy?.walletAddress,
         },
@@ -58,6 +60,7 @@ const allPostsOfUser = async (req, res) => {
       };
     }
 
+    console.log(formattedPosts);
     return res.send({
       success: true,
       posts: formattedPosts,

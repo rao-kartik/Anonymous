@@ -1,7 +1,7 @@
 const express = require('express');
 const router = express.Router();
 
-const { authenticateUser } = require('../controllers/user.controller');
+const { authenticateUser, followUser, unfollowUser } = require('../controllers/user.controller');
 const { validateAddress, validateToken } = require('../middlewares/auth.middleware');
 const {
   newPost,
@@ -35,6 +35,8 @@ router.get('/ping', (_, res) => {
 });
 
 router.get('/authenticate/:address', validateAddress, authenticateUser);
+router.post('/user/follow', validateToken, followUser);
+router.post('/user/unfollow', validateToken, unfollowUser);
 
 router.post('/post/new', validateToken, newPost);
 router.patch('/post/edit/:postId', validateToken, isPostOwner, editPost);
