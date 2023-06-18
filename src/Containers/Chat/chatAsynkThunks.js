@@ -40,6 +40,28 @@ export const fetchAllChatRequestsThunk = createAsyncThunk(
   }
 );
 
+export const decryptMessageThunk = createAsyncThunk('DECRYPT_MESSAGE', async (payload, others) => {
+  try {
+    const { pushUser, key } = others.getState()[REDUCERS.chat];
+
+    console.log({
+      messages: [payload],
+      connectedUser: pushUser,
+      pgpPrivateKey: key,
+    })
+    const decryptedChat = await PushAPI.chat.decryptConversation({
+      messages: [payload],
+      connectedUser: pushUser,
+      pgpPrivateKey: key,
+    });
+
+    console.log(decryptedChat)
+    return decryptedChat[0];
+  } catch (err) {
+    throw err?.response?.data || err;
+  }
+});
+
 export const decryptDPGKeyThunk = createAsyncThunk('DECRYPT_DPG_KEY', async (payload, others) => {
   try {
     const { signer } = await getEtherSigner();
@@ -108,6 +130,14 @@ export const sendMessageThunk = createAsyncThunk('SEND_MESSAGE', async (payload,
     const { signer } = await getEtherSigner();
     const { key } = others.getState()[REDUCERS.chat];
 
+    console.log({
+      signer,
+      env: ENV,
+      pgpPrivateKey: key,
+      messageType: 'Text',
+      ...payload,
+    })
+
     const _user = await PushAPI.chat.send({
       signer,
       env: ENV,
@@ -149,6 +179,40 @@ export const fetchConversationListThunk = createAsyncThunk(
       });
 
       return conversationList;
+    } catch (err) {
+      throw err?.response?.data || err;
+    }
+  }
+);
+
+export const fetchLatestConversationListThunk = createAsyncThunk(
+  'FETCH_LATEST_CONVERSATION_LIST',
+  async (payload, others) => {
+    try {
+      const { pushUser, key } = others.getState()[REDUCERS.chat];
+
+      let conversationHash = payload?.conversationHash;
+
+      if (!conversationHash?.threadHash) {
+        conversationHash = await PushAPI.chat.conversationHash({
+          account: pushUser?.did,
+          conversationId: addressPrefix + payload?.walletAddress,
+          env: ENV,
+        });
+
+        if (!conversationHash.threadHash) throw new Error('Conversation not found');
+      }
+
+      const latestMessage = await PushAPI.chat.latest({
+        threadhash: conversationHash.threadHash,
+        account: pushUser?.wallets,
+        toDecrypt: true,
+        pgpPrivateKey: key,
+        env: ENV,
+      });
+
+      console.log(latestMessage)
+      return latestMessage;
     } catch (err) {
       throw err?.response?.data || err;
     }

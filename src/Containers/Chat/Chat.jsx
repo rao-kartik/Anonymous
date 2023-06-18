@@ -17,7 +17,7 @@ import { setConversationList } from './chatSlice';
 
 const Chat = ({ receiver, onClose, source }) => {
   const dispatch = useDispatch();
-  const { loader, conversationList } = useSelector((state) => state[REDUCERS.chat]);
+  const { loader, conversationList, key } = useSelector((state) => state[REDUCERS.chat]);
   const { userInfo } = useSelector((state) => state[REDUCERS.common]);
 
   const [msgInput, setMsgInput] = useState('');
@@ -49,6 +49,7 @@ const Chat = ({ receiver, onClose, source }) => {
     setMsgInput('');
   };
 
+  // SOCKET
   const addSocketEvents = () => {
     socketConnect?.on(EVENTS.CONNECT, () => {
       setConnected(true);
@@ -58,8 +59,7 @@ const Chat = ({ receiver, onClose, source }) => {
       setConnected(false);
     });
 
-    socketConnect?.on(EVENTS.CHAT_RECEIVED_MESSAGE, (message) => {
-      console.log(message);
+    socketConnect?.on(EVENTS.CHAT_RECEIVED_MESSAGE, async (message) => {
       dispatch(setConversationList(message));
     });
   };
@@ -85,6 +85,7 @@ const Chat = ({ receiver, onClose, source }) => {
           userInfo?.walletAddress?.includes(addressPrefix)
             ? userInfo?.walletAddress
             : addressPrefix + userInfo?.walletAddress,
+          key,
           'chat'
         )
       );

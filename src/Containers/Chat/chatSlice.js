@@ -3,9 +3,11 @@ import { createSlice } from '@reduxjs/toolkit';
 import { REDUCERS } from '../../constants';
 import {
   decryptDPGKeyThunk,
+  decryptMessageThunk,
   fetchAllChatRequestsThunk,
   fetchAllChatsThunk,
   fetchConversationListThunk,
+  fetchLatestConversationListThunk,
   getPushUserThunk,
 } from './chatAsynkThunks';
 
@@ -89,6 +91,29 @@ const chatSlice = createSlice({
       })
       .addCase(fetchConversationListThunk.rejected, (state) => {
         state.conversationList = null;
+        state.loader.conversationList = false;
+      })
+      //fetch conversation list
+      .addCase(fetchLatestConversationListThunk.pending, (state) => {
+        state.loader.conversationList = true;
+      })
+      .addCase(fetchLatestConversationListThunk.fulfilled, (state, action) => {
+        state.loader.conversationList = false;
+        state.conversationList = [...action.payload, ...state.conversationList];
+      })
+      .addCase(fetchLatestConversationListThunk.rejected, (state) => {
+        state.loader.conversationList = false;
+      })
+      // decrypt message
+      .addCase(decryptMessageThunk.pending, (state) => {
+        state.loader.conversationList = true;
+      })
+      .addCase(decryptMessageThunk.fulfilled, (state, action) => {
+        console.log(action.payload);
+        state.loader.conversationList = false;
+        state.conversationList = [action.payload, ...state.conversationList];
+      })
+      .addCase(decryptMessageThunk.rejected, (state) => {
         state.loader.conversationList = false;
       });
   },

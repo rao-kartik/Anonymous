@@ -27,7 +27,7 @@ const Home = () => {
 
   const handleOpenChat = ({ walletAddress, conversationHash, source }) => {
     if (pushUser && key) {
-      if (!chatId) setChatId({ walletAddress, source });
+      if (!chatId) setChatId({ walletAddress, conversationHash, source });
 
       dispatch(fetchConversationListThunk({ walletAddress, conversationHash }));
     } else {
@@ -96,7 +96,12 @@ const Home = () => {
       </Flex>
 
       {chatId?.walletAddress && (
-        <Chat receiver={chatId?.walletAddress} onClose={handleCloseChat} source={chatId?.source} />
+        <Chat
+          receiver={chatId?.walletAddress}
+          onClose={handleCloseChat}
+          source={chatId?.source}
+          conversationHash={chatId?.conversationHash}
+        />
       )}
     </>
   );
