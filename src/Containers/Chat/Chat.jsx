@@ -102,7 +102,7 @@ const Chat = ({ receiver, onClose, source }) => {
     <Box
       w={350}
       h={500}
-      bg="#fff"
+      bg="#95a5a6"
       position="fixed"
       right={4}
       bottom={4}
@@ -110,7 +110,7 @@ const Chat = ({ receiver, onClose, source }) => {
       overflow="hidden"
       className={styles['chat-top-wrapper']}
     >
-      <Box position={'relative'} p={4} boxShadow="base">
+      <Box position={'relative'} p={4} boxShadow="base" bg="#bdc3c7">
         <Text className={styles.title} fontWeight={600} position="relative">
           Chat
         </Text>
@@ -171,7 +171,7 @@ const Chat = ({ receiver, onClose, source }) => {
       </Flex>
 
       <form onClick={handleSend}>
-        <Flex position={'relative'} p={4} boxShadow="xs" gap={4}>
+        <Flex position={'relative'} p={4} boxShadow="xs" gap={4} bg="#bdc3c7">
           <Input onChange={handleMsgInputChange} value={msgInput} />
 
           <Button type="submit" disabled={!loader.fetchingUser}>

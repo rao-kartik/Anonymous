@@ -37,7 +37,7 @@ const ChatMessages = (props) => {
 
   return (
     <>
-      <Box w="100%" h="50%" overflow="hidden" borderBottom="1px solid #dfe6e9">
+      <Box w="100%" h="50%" overflow="hidden" bg="#f7ede2" p={4} borderRadius={8}>
         <Heading size="md">Chats</Heading>
 
         <Flex
@@ -72,7 +72,7 @@ const ChatMessages = (props) => {
         </Flex>
       </Box>
 
-      <Box w="100%" h="50%" overflow="hidden">
+      <Box w="100%" h="50%" overflow="hidden" bg="#f7ede2" p={4} borderRadius={8}>
         <Heading size="md">Chat Requests</Heading>
 
         <Flex

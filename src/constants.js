@@ -1,7 +1,7 @@
 export const PATHS = {
   main: '/',
   home: '/home',
-  signin: '/auth/signin',
+  groups: '/groups',
 };
 
 export const REDUCERS = {

@@ -50,7 +50,7 @@ const Home = () => {
   return (
     <>
       <Flex
-        bg="#f0f2f5"
+        bg="#124559"
         h="100vh"
         w="100vw"
         position="relative"
@@ -59,15 +59,7 @@ const Home = () => {
       >
         <Header />
 
-        <Flex
-          w={`${boxWidth}%`}
-          h="100%"
-          bg="#fff"
-          p={4}
-          borderRadius={8}
-          flexDirection="column"
-          gap={4}
-        >
+        <Flex w={`${boxWidth}%`} h="100%" flexDirection="column" gap={4}>
           <FollowersFollowing handleOpenChat={handleOpenChat} />
         </Flex>
 
@@ -82,15 +74,7 @@ const Home = () => {
           <Feeds />
         </Box>
 
-        <Flex
-          w={`${boxWidth}%`}
-          h="100%"
-          bg="#fff"
-          p={4}
-          borderRadius={8}
-          flexDirection="column"
-          gap={4}
-        >
+        <Flex w={`${boxWidth}%`} h="100%" flexDirection="column" gap={4}>
           <ChatMessages handleOpenChat={handleOpenChat} />
         </Flex>
       </Flex>

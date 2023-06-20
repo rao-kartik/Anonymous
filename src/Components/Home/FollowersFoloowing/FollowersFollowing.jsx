@@ -33,7 +33,7 @@ const FollowersFollowing = ({ handleOpenChat }) => {
 
   return (
     <>
-      <Box w="100%" h="50%" overflow="hidden" borderBottom="1px solid #dfe6e9">
+      <Box w="100%" h="50%" overflow="hidden" bg="#f7ede2" p={4} borderRadius={8}>
         <Heading size="md">Followers</Heading>
 
         <Flex
@@ -58,7 +58,7 @@ const FollowersFollowing = ({ handleOpenChat }) => {
         </Flex>
       </Box>
 
-      <Box w="100%" h="50%" overflow="hidden">
+      <Box w="100%" h="50%" overflow="hidden" bg="#f7ede2" p={4} borderRadius={8}>
         <Heading size="md">Following</Heading>
 
         <Flex
