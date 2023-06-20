@@ -2,7 +2,7 @@ import React, { useEffect } from 'react';
 import Web3 from 'web3';
 import { useNavigate } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
-import { Button, Flex, useToast } from '@chakra-ui/react';
+import { Box, Button, useToast } from '@chakra-ui/react';
 
 import MetamaskLogo from '../../Logos/MetamaskLogo';
 
@@ -11,7 +11,9 @@ import { PATHS, REDUCERS } from '../../constants';
 
 import styles from './signin.module.scss';
 
-const SignIn = () => {
+const SignIn = (props) => {
+  const { background = '#EFF6E0', color = '#000' } = props;
+
   const { userInfo, error, loader } = useSelector((reducer) => reducer[REDUCERS.common]);
 
   const dispatch = useDispatch();
@@ -66,10 +68,10 @@ const SignIn = () => {
   }, [error?.auth, error.authMessage]);
 
   return (
-    <Flex justify="center" align="center" w="100vw" h="100vh">
+    <Box position="relative">
       <Button
-        bg="#ffffff"
-        color="#000"
+        bg={background}
+        color={color}
         boxShadow="base"
         size="md"
         gap={3}
@@ -77,13 +79,14 @@ const SignIn = () => {
         px={10}
         onClick={handleLogin}
         disabled={loader?.auth}
+        _hover={{ background, opacity: '0.8', cursor: 'pointer' }}
       >
         <span className={styles['metamask-logo-wrapper']}>
           <MetamaskLogo />
         </span>{' '}
         Signin with Metamask
       </Button>
-    </Flex>
+    </Box>
   );
 };
 

@@ -4,9 +4,9 @@ import { Navigate, RouterProvider, createBrowserRouter } from 'react-router-dom'
 
 import { PATHS, REDUCERS } from './constants';
 
-import SignIn from './Containers/Auth/SignIn';
 import Home from './Containers/Home/Home';
 import { getPushUserThunk } from './Containers/Chat/chatAsynkThunks';
+import InitialPage from './Containers/InitialPage/InitialPage';
 
 const App = () => {
   const dispatch = useDispatch();
@@ -16,13 +16,13 @@ const App = () => {
 
   const router = createBrowserRouter([
     {
-      path: PATHS.home,
-      element: userInfo?.isLoggedIn ? <Home /> : <Navigate to={PATHS.signin} />,
+      path: PATHS.main,
+      element: userInfo?.isLoggedIn ? <Navigate to={PATHS.home} /> : <InitialPage />,
       exact: true,
     },
     {
-      path: PATHS.signin,
-      element: <SignIn />,
+      path: PATHS.home,
+      element: userInfo?.isLoggedIn ? <Home /> : <Navigate to={PATHS.main} />,
       exact: true,
     },
   ]);

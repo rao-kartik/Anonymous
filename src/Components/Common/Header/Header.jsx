@@ -17,7 +17,9 @@ const Header = () => {
       zIndex={10}
     >
       <Box w="20%"></Box>
-      <Box w="60%">Home</Box>
+      <Box w="60%">
+        
+      </Box>
       <Box w="20%"></Box>
     </Flex>
   );
