@@ -4,7 +4,11 @@ const COMMENT = require('../models/comment.model');
 
 const allPosts = async (req, res) => {
   try {
-    const posts = await POST.find({ group: null }).populate('postedBy').lean().exec();
+    const posts = await POST.find({ group: null })
+      .sort({ postedAt: -1 })
+      .populate('postedBy')
+      .lean()
+      .exec();
 
     const formattedPosts = [];
 
