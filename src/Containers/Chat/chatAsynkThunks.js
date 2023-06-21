@@ -48,14 +48,14 @@ export const decryptMessageThunk = createAsyncThunk('DECRYPT_MESSAGE', async (pa
       messages: [payload],
       connectedUser: pushUser,
       pgpPrivateKey: key,
-    })
+    });
     const decryptedChat = await PushAPI.chat.decryptConversation({
       messages: [payload],
       connectedUser: pushUser,
       pgpPrivateKey: key,
     });
 
-    console.log(decryptedChat)
+    console.log(decryptedChat);
     return decryptedChat[0];
   } catch (err) {
     throw err?.response?.data || err;
@@ -130,14 +130,6 @@ export const sendMessageThunk = createAsyncThunk('SEND_MESSAGE', async (payload,
     const { signer } = await getEtherSigner();
     const { key } = others.getState()[REDUCERS.chat];
 
-    console.log({
-      signer,
-      env: ENV,
-      pgpPrivateKey: key,
-      messageType: 'Text',
-      ...payload,
-    })
-
     const _user = await PushAPI.chat.send({
       signer,
       env: ENV,
@@ -211,7 +203,7 @@ export const fetchLatestConversationListThunk = createAsyncThunk(
         env: ENV,
       });
 
-      console.log(latestMessage)
+      console.log(latestMessage);
       return latestMessage;
     } catch (err) {
       throw err?.response?.data || err;

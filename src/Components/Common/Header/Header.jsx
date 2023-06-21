@@ -24,20 +24,27 @@ const Header = () => {
       <Flex w="60%" gap={50}>
         <NavLink
           to={PATHS?.home}
-          className={({ isActive, isPending }) => {
-            console.log(isActive);
-            return isPending ? styles?.inactive : isActive ? styles?.active : styles?.inactive;
-          }}
+          className={({ isActive, isPending }) =>
+            isPending ? styles?.inactive : isActive ? styles?.active : styles?.inactive
+          }
         >
           Home
         </NavLink>
         <NavLink
           to={PATHS?.groups}
-          className={({ isActive, isPending }) => {
-            return isPending ? styles?.inactive : isActive ? styles?.active : styles?.inactive;
-          }}
+          className={({ isActive, isPending }) =>
+            isPending ? styles?.inactive : isActive ? styles?.active : styles?.inactive
+          }
         >
           Groups
+        </NavLink>
+        <NavLink
+          to={PATHS?.fundraiser}
+          className={({ isActive, isPending }) =>
+            isPending ? styles?.inactive : isActive ? styles?.active : styles?.inactive
+          }
+        >
+          Fundraisers
         </NavLink>
       </Flex>
       <Box w="20%"></Box>

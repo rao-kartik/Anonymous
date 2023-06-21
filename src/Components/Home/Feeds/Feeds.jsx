@@ -1,4 +1,4 @@
-import React, { memo, useEffect, useState } from 'react';
+import React, { memo, useEffect, useRef, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import moment from 'moment/moment';
 import { Box, Flex, Grid, Heading, Text } from '@chakra-ui/layout';
@@ -24,6 +24,7 @@ const Feeds = (props) => {
   const { isUserFeeds = false } = props;
 
   const [showComments, setShowComments] = useState(null);
+  const fetched = useRef(false);
 
   const handleLikeDislike = (postId, previousStatus) => {
     dispatch(likeDislikeThunk({ postId, status: previousStatus === false ? 'like' : 'dislike' }));
@@ -43,10 +44,13 @@ const Feeds = (props) => {
   };
 
   useEffect(() => {
-    if (isUserFeeds) {
-      dispatch(getAllPostsUserThunk());
-    } else {
-      dispatch(getAllPostsThunk());
+    if (!fetched.current) {
+      if (isUserFeeds) {
+        dispatch(getAllPostsUserThunk());
+      } else {
+        dispatch(getAllPostsThunk());
+      }
+      fetched.current = true;
     }
   }, []);
 

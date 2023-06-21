@@ -1,5 +1,6 @@
 import Axios from 'axios';
 import { deleteItemLS, getItemLS } from './storage';
+import { PATHS } from '../constants';
 
 const axios = Axios.create();
 
@@ -25,7 +26,7 @@ axios.interceptors.response.use(
     if (err.response.data.message === 'jwt expired') {
       deleteItemLS('token');
       deleteItemLS('user');
-      window.location.href = '/auth/signin';
+      window.location.href = PATHS.main;
     }
     return Promise.reject(err);
   }

@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useRef } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { Navigate, RouterProvider, createBrowserRouter } from 'react-router-dom';
 
@@ -7,12 +7,15 @@ import { PATHS, REDUCERS } from './constants';
 import Home from './Containers/Home/Home';
 import { getPushUserThunk } from './Containers/Chat/chatAsynkThunks';
 import InitialPage from './Containers/InitialPage/InitialPage';
+import Fundraisers from './Containers/Fundraisers/Fundraisers';
 
 const App = () => {
   const dispatch = useDispatch();
 
   const { userInfo } = useSelector((reducer) => reducer[REDUCERS.common]);
   const { pushUser, key } = useSelector((state) => state[REDUCERS.chat]);
+
+  const fetched = useRef(false);
 
   const router = createBrowserRouter([
     {
@@ -25,11 +28,17 @@ const App = () => {
       element: userInfo?.isLoggedIn ? <Home /> : <Navigate to={PATHS.main} />,
       exact: true,
     },
+    {
+      path: PATHS.fundraiser,
+      element: userInfo?.isLoggedIn ? <Fundraisers /> : <Navigate to={PATHS.main} />,
+      exact: true,
+    },
   ]);
 
   useEffect(() => {
-    if (userInfo?.isLoggedIn && !pushUser && !key) {
+    if (!fetched.current && userInfo?.isLoggedIn && !pushUser && !key) {
       dispatch(getPushUserThunk());
+      fetched.current = true;
     }
   }, [userInfo]);
 
