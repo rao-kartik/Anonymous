@@ -1,5 +1,4 @@
 import React from 'react';
-import Web3 from 'web3';
 import { useDispatch, useSelector } from 'react-redux';
 import { Box, Button } from '@chakra-ui/react';
 import { Buffer } from 'buffer';
@@ -11,7 +10,7 @@ import { REDUCERS } from '../../constants';
 
 import styles from './signin.module.scss';
 import { triggerAlert } from '../../utils/common';
-import { signTransaction } from '../../utils/ether';
+import { getEtherSigner, signTransaction } from '../../utils/ether';
 
 const SignIn = (props) => {
   const { background = '#EFF6E0', color = '#000' } = props;
@@ -25,18 +24,17 @@ const SignIn = (props) => {
       if (typeof window !== 'undefined' && window?.ethereum) {
         await window?.ethereum?.request({ method: 'eth_requestAccounts' });
 
-        const web3 = new Web3(window?.ethereum);
-        console.log(web3)
+        const provider = await getEtherSigner();
 
-        const accounts = await web3?.eth?.getAccounts();
+        const account = provider?.account;
 
         const host = window?.location?.host;
-        const siweMessage = `${host} wants to sign in with your ethereum account:\n${accounts[0]}.\n\n Sign to access the content`;
+        const siweMessage = `${host} wants to sign in with your ethereum account:\n${account}.\n\n Sign to access the content`;
         const message = `0x${Buffer.from(siweMessage, 'utf8').toString('hex')}`;
 
-        await signTransaction(message, accounts[0]);
+        await signTransaction(message, account);
 
-        dispatch(authenticateUserThunk(accounts[0]));
+        dispatch(authenticateUserThunk(account));
       }
     } catch (err) {
       console.log(err);

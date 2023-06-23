@@ -10,7 +10,7 @@ export const errorAlert = (err, redirect) => {
   const message =
     err?.response?.data?.message === 'jwt malformed'
       ? 'Invalid token'
-      : err?.response?.data?.message;
+      : err?.response?.data?.message || err?.message;
 
   triggerAlert('error', message);
 

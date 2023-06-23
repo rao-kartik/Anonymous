@@ -20,5 +20,5 @@ export const getEtherSigner = async () => {
 
   const _signer = provider.getSigner(accounts[0]);
 
-  return { signer: _signer, account: accounts[0] };
+  return { provider, signer: _signer, account: accounts[0] };
 };
