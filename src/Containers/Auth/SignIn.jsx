@@ -1,7 +1,6 @@
 import React from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { Box, Button } from '@chakra-ui/react';
-import { Buffer } from 'buffer';
 
 import MetamaskLogo from '../../Logos/MetamaskLogo';
 
@@ -29,8 +28,8 @@ const SignIn = (props) => {
         const account = provider?.account;
 
         const host = window?.location?.host;
-        const siweMessage = `${host} wants to sign in with your ethereum account:\n${account}.\n\n Sign to access the content`;
-        const message = `0x${Buffer.from(siweMessage, 'utf8').toString('hex')}`;
+        const message = `${host} wants to sign in with your ethereum account:\n${account}.\n\n Sign to access the content`;
+       
 
         await signTransaction(message, account);
 

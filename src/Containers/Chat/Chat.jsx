@@ -1,19 +1,20 @@
 import React, { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { Box, Flex, Text } from '@chakra-ui/layout';
-
-import { REDUCERS } from '../../constants';
 import { Button, IconButton } from '@chakra-ui/button';
 import { SmallCloseIcon } from '@chakra-ui/icons';
 import { Input } from '@chakra-ui/input';
-import { addressPrefix } from '../../utils/common';
+import { Spinner } from '@chakra-ui/spinner';
+import { EVENTS } from '@pushprotocol/socket';
+
+import { REDUCERS } from '../../constants';
+import { addressPrefix, triggerAlert } from '../../utils/common';
 import { approveChatRequestThunk, sendMessageThunk } from './chatAsynkThunks';
+import { connectToSocket } from '../../utils/socket';
+import { setConversationList } from './chatSlice';
+import { signTransaction } from '../../utils/ether';
 
 import styles from './chat.module.scss';
-import { Spinner } from '@chakra-ui/spinner';
-import { connectToSocket } from '../../utils/socket';
-import { EVENTS } from '@pushprotocol/socket';
-import { setConversationList } from './chatSlice';
 
 const Chat = ({ receiver, onClose, source }) => {
   const dispatch = useDispatch();
@@ -30,23 +31,31 @@ const Chat = ({ receiver, onClose, source }) => {
     setMsgInput(value);
   };
 
-  const handleSend = (e) => {
+  const handleSend = async (e) => {
     e.preventDefault();
 
-    if (msgInput?.length > 0) {
-      const payload = {
-        messageContent: msgInput,
-        receiverAddress: receiver?.includes(addressPrefix) ? receiver : addressPrefix + receiver,
-      };
+    try {
+      if (msgInput?.length > 0) {
+        const message = `Do you want to send the message: ${msgInput}\n\nto ${receiver}`;
+        await signTransaction(message);
 
-      if (source === 'chatRequest') {
-        dispatch(approveChatRequestThunk(receiver));
+        const payload = {
+          messageContent: msgInput,
+          receiverAddress: receiver?.includes(addressPrefix) ? receiver : addressPrefix + receiver,
+        };
+
+        if (source === 'chatRequest') {
+          dispatch(approveChatRequestThunk(receiver));
+        }
+
+        dispatch(sendMessageThunk(payload));
       }
 
-      dispatch(sendMessageThunk(payload));
+      setMsgInput('');
+      return;
+    } catch (err) {
+      triggerAlert('error', err.message);
     }
-
-    setMsgInput('');
   };
 
   // SOCKET
