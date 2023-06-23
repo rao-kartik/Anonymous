@@ -1,5 +1,5 @@
 import { createSlice } from '@reduxjs/toolkit';
-import { authenticateUserThunk, getUserInfoThunk } from './asyncThunks';
+import { authenticateUserThunk, followUnfollowThunk, getUserInfoThunk } from './asyncThunks';
 import { deleteItemLS, setItemLS } from '../../utils/storage';
 import { REDUCERS } from '../../constants';
 
@@ -11,6 +11,7 @@ const initialState = {
     auth: false,
   },
   userInfo: null,
+  messages: {},
 };
 
 const commonSlice = createSlice({
@@ -50,6 +51,7 @@ const commonSlice = createSlice({
 
         deleteItemLS('token');
       })
+      /* GET USER INFO */
       .addCase(getUserInfoThunk.pending, (state) => {
         state.loader.info = true;
         state.error.info = false;
@@ -65,8 +67,24 @@ const commonSlice = createSlice({
       .addCase(getUserInfoThunk.rejected, (state, action) => {
         state.loader.info = false;
         state.error.info = true;
-        state.error.infoMessage = action?.error?.message;
+        state.messages.info = action?.error?.message;
         state.userInfo = null;
+      })
+      /* FOLLOW UNFOLLOW USER */
+      .addCase(followUnfollowThunk.pending, (state) => {
+        state.loader.followUnfollow = true;
+        state.error.followUnfollow = false;
+      })
+      .addCase(followUnfollowThunk.fulfilled, (state, action) => {
+        state.loader.followUnfollow = false;
+        state.error.followUnfollow = false;
+        state.userInfo = { ...state.userInfo, ...action?.payload?.userDetails };
+        state.messages.followUnfollow = action?.payload?.message;
+      })
+      .addCase(followUnfollowThunk.rejected, (state, action) => {
+        state.loader.followUnfollow = false;
+        state.error.followUnfollow = true;
+        state.messages.followUnfollow = action?.error?.message;
       });
   },
 });

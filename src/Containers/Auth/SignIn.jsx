@@ -14,7 +14,7 @@ import styles from './signin.module.scss';
 const SignIn = (props) => {
   const { background = '#EFF6E0', color = '#000' } = props;
 
-  const { userInfo, error, loader } = useSelector((reducer) => reducer[REDUCERS.common]);
+  const { userInfo, error, loader, messages } = useSelector((reducer) => reducer[REDUCERS.common]);
 
   const dispatch = useDispatch();
   const navigate = useNavigate();
@@ -58,14 +58,14 @@ const SignIn = (props) => {
   useEffect(() => {
     if (error?.auth) {
       toast({
-        title: error?.authMessage,
+        title: messages?.authMessage,
         status: 'error',
         duration: 2000,
         isClosable: true,
         position: 'top-right',
       });
     }
-  }, [error?.auth, error.authMessage]);
+  }, [error?.auth, messages?.authMessage]);
 
   return (
     <Box position="relative">
