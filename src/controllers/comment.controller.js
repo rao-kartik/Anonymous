@@ -14,7 +14,10 @@ const getAllComments = async (req, res) => {
       });
     }
 
-    const comments = await COMMENT.find({ post: postId }).lean().exec();
+    const comments = await COMMENT.find({ post: postId })
+      .populate('commentedBy', 'walletAddress')
+      .lean()
+      .exec();
 
     return res.send({
       success: true,
@@ -41,12 +44,16 @@ const newComment = async (req, res) => {
       });
     }
 
-    const comment = await COMMENT.create({
+    let comment = await COMMENT.create({
       comment: req.body.comment,
       commentedBy: req.userId,
       post: postId,
     });
     await POST.findByIdAndUpdate(postId, { totalComments: post?.totalComments + 1 });
+    comment = await COMMENT.findById(comment._id)
+      .populate('commentedBy', 'walletAddress')
+      .lean()
+      .exec();
 
     return res.send({
       success: true,

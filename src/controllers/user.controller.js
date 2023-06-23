@@ -49,7 +49,11 @@ const authenticateUser = async (req, res) => {
 
 const getUserDetails = async (req, res) => {
   try {
-    let user = await USER.findOne({ _id: req.userId }).lean().exec();
+    let user = await USER.findOne({ _id: req.userId })
+      .populate('followers')
+      .populate('following')
+      .lean()
+      .exec();
 
     return res.status(200).send({
       success: true,
