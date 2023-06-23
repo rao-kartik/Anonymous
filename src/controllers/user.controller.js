@@ -47,6 +47,40 @@ const authenticateUser = async (req, res) => {
   }
 };
 
+const getUserDetails = async (req, res) => {
+  try {
+    const user = await USER.findOne({ _id: req.userId })
+      .populate('followers')
+      .populate('following')
+      .lean()
+      .exec();
+
+    return res.status(200).send({
+      success: true,
+      userDetails: {
+        id: user._id,
+        walletAddress: user?.walletAddress,
+        userName: user?.userName,
+        totalFollowers: user?.totalFollowers,
+        totalFollowing: user?.totalFollowing,
+        followers: user?.followers?.map((_f) => ({
+          id: _f?._id,
+          walletAddress: _f?.walletAddress,
+        })),
+        following: user?.following?.map((_f) => ({
+          id: _f?._id,
+          walletAddress: _f?.walletAddress,
+        })),
+      },
+    });
+  } catch (err) {
+    return res.status(400).send({
+      success: false,
+      message: err.message,
+    });
+  }
+};
+
 const followUser = async (req, res) => {
   try {
     const { id } = req.query;
@@ -58,7 +92,7 @@ const followUser = async (req, res) => {
       });
     }
 
-    const user = USER.findById(id);
+    let user = USER.findById(id);
 
     if (!user) {
       return res.status(400).send({
@@ -90,9 +124,16 @@ const followUser = async (req, res) => {
       $push: { following: id },
     });
 
+    user = await USER.findOne({ _id: req.userId }, { followers: 1, following: 1 })
+      .populate('followers')
+      .populate('following')
+      .lean()
+      .exec();
+
     return res.send({
       success: true,
-      message: 'followed successfully',
+      message: 'Followed successfully',
+      userDetails: user,
     });
   } catch (err) {
     return res.status(400).send({
@@ -113,7 +154,7 @@ const unfollowUser = async (req, res) => {
       });
     }
 
-    const user = USER.findById(id);
+    let user = USER.findById(id);
 
     if (!user) {
       return res.status(400).send({
@@ -145,9 +186,16 @@ const unfollowUser = async (req, res) => {
       $pull: { following: id },
     });
 
+    user = await USER.findOne({ _id: req.userId }, { followers: 1, following: 1 })
+      .populate('followers')
+      .populate('following')
+      .lean()
+      .exec();
+
     return res.send({
       success: true,
       message: 'Unfollowed successfully',
+      userDetails: user,
     });
   } catch (err) {
     return res.status(400).send({
@@ -159,6 +207,7 @@ const unfollowUser = async (req, res) => {
 
 module.exports = {
   authenticateUser,
+  getUserDetails,
   followUser,
   unfollowUser,
 };

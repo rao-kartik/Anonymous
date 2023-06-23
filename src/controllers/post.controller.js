@@ -6,7 +6,7 @@ const allPosts = async (req, res) => {
   try {
     const posts = await POST.find({ group: null })
       .sort({ postedAt: -1 })
-      .populate('postedBy')
+      .populate('postedBy', { walletAddress: 1, userName: 1 })
       .lean()
       .exec();
 
@@ -19,11 +19,6 @@ const allPosts = async (req, res) => {
 
       formattedPosts[i] = {
         ...posts[i],
-        postedBy: {
-          id: posts[i]?.postedBy?._id,
-          userName: posts[i]?.postedBy?.userName,
-          walletAddress: posts[i]?.postedBy?.walletAddress,
-        },
         userLiked:
           userLiked && posts[i]?._id?.toString() === userLiked?.post?.toString() ? true : false,
       };
@@ -64,7 +59,6 @@ const allPostsOfUser = async (req, res) => {
       };
     }
 
-    console.log(formattedPosts);
     return res.send({
       success: true,
       posts: formattedPosts,
@@ -92,7 +86,11 @@ const newPost = async (req, res) => {
       postedBy: req?.userId,
     };
 
-    const post = await POST.create(data);
+    let post = await POST.create(data);
+    post = await POST.findById(post._id)
+      .populate('postedBy', { walletAddress: 1, userName: 1 })
+      .lean()
+      .exec();
 
     return res.status(200).send({
       success: true,
