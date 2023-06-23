@@ -32,7 +32,7 @@ const SignIn = (props) => {
         const siweMessage = `${host} wants to sign in with your ethereum account:\n${accounts[0]}.\n\n Sign to access the content`;
         const message = `0x${Buffer.from(siweMessage, 'utf8').toString('hex')}`;
 
-        const response = await window?.ethereum?.request({
+        await window?.ethereum?.request({
           method: 'personal_sign',
           params: [message, accounts[0]],
         });

@@ -40,10 +40,9 @@ const App = () => {
 
   const checkIfMetamaskConnected = async () => {
     if (typeof window !== 'undefined') {
-      const connected = await window.ethereum.isConnected();
-      console.log(connected);
+      const accounts = await window.ethereum.request({ method: 'eth_accounts' });
 
-      if (!connected) {
+      if (!accounts?.length > 0) {
         deleteItemLS('token');
       } else if (!userInfo && !userInfoFetched?.current) {
         dispatch(getUserInfoThunk());
