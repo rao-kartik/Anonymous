@@ -32,6 +32,8 @@ import {
 } from '@chakra-ui/react';
 import { SlOptionsVertical } from 'react-icons/sl';
 import { followUnfollowThunk } from '../../../Containers/Common/asyncThunks';
+import { triggerAlert } from '../../../utils/common';
+import { signTransaction } from '../../../utils/ether';
 
 const Feeds = (props) => {
   const dispatch = useDispatch();
@@ -61,10 +63,19 @@ const Feeds = (props) => {
     setOpenDeleteModal(null);
   };
 
-  const handleDeletePost = (postId, confirmDelete) => {
+  const handleDeletePost = async (postId, confirmDelete) => {
     if (confirmDelete) {
-      dispatch(deletePostThunk(openDeleteModal?.post));
-      handleCloseDeleteModal();
+      try {
+        const message = `Do you want to delete the post`;
+        await signTransaction(message);
+
+        dispatch(deletePostThunk(openDeleteModal?.post));
+        handleCloseDeleteModal();
+        return;
+      } catch (err) {
+        triggerAlert('error', err.message);
+        return;
+      }
     } else
       setOpenDeleteModal({
         open: true,

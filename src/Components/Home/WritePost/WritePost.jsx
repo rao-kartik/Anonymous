@@ -9,6 +9,8 @@ import { newPostThunk } from '../../../Containers/Home/asyncThunks';
 import { REDUCERS } from '../../../constants';
 import { setHomeReducer } from '../../../Containers/Home/homeSlice';
 import { CircularProgress } from '@chakra-ui/progress';
+import { triggerAlert } from '../../../utils/common';
+import { signTransaction } from '../../../utils/ether';
 
 const WritePost = () => {
   const dispatch = useDispatch();
@@ -28,8 +30,20 @@ const WritePost = () => {
     }
   };
 
-  const handleSubmitPost = () => {
-    dispatch(newPostThunk({ post: postInp }));
+  const handleSubmitPost = async () => {
+    try {
+      if (postInp?.length > 10) {
+        const message = `Do you want to make post:\n${postInp}`;
+        await signTransaction(message);
+
+        dispatch(newPostThunk({ post: postInp }));
+      } else {
+        triggerAlert('error', 'Add min of 10 characters');
+      }
+      return;
+    } catch (err) {
+      triggerAlert('error', err.message);
+    }
   };
 
   useEffect(() => {
