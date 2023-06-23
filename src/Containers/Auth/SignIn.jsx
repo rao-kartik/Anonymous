@@ -11,6 +11,7 @@ import { REDUCERS } from '../../constants';
 
 import styles from './signin.module.scss';
 import { triggerAlert } from '../../utils/common';
+import { signTransaction } from '../../utils/ether';
 
 const SignIn = (props) => {
   const { background = '#EFF6E0', color = '#000' } = props;
@@ -25,6 +26,7 @@ const SignIn = (props) => {
         await window?.ethereum?.request({ method: 'eth_requestAccounts' });
 
         const web3 = new Web3(window?.ethereum);
+        console.log(web3)
 
         const accounts = await web3?.eth?.getAccounts();
 
@@ -32,10 +34,7 @@ const SignIn = (props) => {
         const siweMessage = `${host} wants to sign in with your ethereum account:\n${accounts[0]}.\n\n Sign to access the content`;
         const message = `0x${Buffer.from(siweMessage, 'utf8').toString('hex')}`;
 
-        await window?.ethereum?.request({
-          method: 'personal_sign',
-          params: [message, accounts[0]],
-        });
+        await signTransaction(message, accounts[0]);
 
         dispatch(authenticateUserThunk(accounts[0]));
       }

@@ -30,12 +30,12 @@ const App = () => {
     },
     {
       path: PATHS.home,
-      element: userInfo?.isLoggedIn ? <Home /> : <Navigate to={PATHS.main} />,
+      element: userInfo?.isLoggedIn ? <Home /> : <></>,
       exact: true,
     },
     {
       path: PATHS.fundraiser,
-      element: userInfo?.isLoggedIn ? <Fundraisers /> : <Navigate to={PATHS.main} />,
+      element: userInfo?.isLoggedIn ? <Fundraisers /> : <></>,
       exact: true,
     },
   ]);

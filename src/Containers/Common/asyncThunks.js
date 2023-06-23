@@ -1,6 +1,6 @@
 import { createAsyncThunk } from '@reduxjs/toolkit';
 import { authenticateUserApi, followUnfollowApi, getUserInfoApi } from '../Auth/api';
-import { customisedErrMessage, triggerAlert } from '../../utils/common';
+import { errorAlert, triggerAlert } from '../../utils/common';
 
 export const authenticateUserThunk = createAsyncThunk('user/authenticate', async (payload) => {
   try {
@@ -10,7 +10,7 @@ export const authenticateUserThunk = createAsyncThunk('user/authenticate', async
 
     return response.data;
   } catch (err) {
-    triggerAlert('error', customisedErrMessage(err));
+    errorAlert(err);
     throw err?.response?.data || err;
   }
 });
@@ -21,7 +21,7 @@ export const getUserInfoThunk = createAsyncThunk('user/get-info', async () => {
 
     return response.data;
   } catch (err) {
-    triggerAlert('error', customisedErrMessage(err));
+    if (typeof window !== 'undefined' && window?.location?.pathname !== '/') errorAlert(err, true);
     throw err?.response?.data || err;
   }
 });
@@ -34,7 +34,7 @@ export const followUnfollowThunk = createAsyncThunk('user/follow-unfollow', asyn
 
     return response.data;
   } catch (err) {
-    triggerAlert('error', customisedErrMessage(err));
+    errorAlert(err, true);
     throw err?.response?.data || err;
   }
 });

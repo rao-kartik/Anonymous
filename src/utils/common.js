@@ -1,8 +1,20 @@
-export const addressPrefix = 'eip155:';
+import { PATHS } from '../constants';
 
-export const customisedErrMessage = (err) =>
-  err?.response?.data?.message === 'jwt malformed' ? 'Invalid token' : err?.response?.data?.message;
+export const addressPrefix = 'eip155:';
 
 export const triggerAlert = (type, msg) => {
   if (typeof window !== 'undefined') window.triggerToast(type, msg);
+};
+
+export const errorAlert = (err, redirect) => {
+  const message =
+    err?.response?.data?.message === 'jwt malformed'
+      ? 'Invalid token'
+      : err?.response?.data?.message;
+
+  triggerAlert('error', message);
+
+  if (redirect && typeof window !== 'undefined') {
+    window.location.href = PATHS.main;
+  }
 };
