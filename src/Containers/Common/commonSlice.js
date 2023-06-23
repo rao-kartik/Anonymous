@@ -31,7 +31,6 @@ const commonSlice = createSlice({
         state.loader.auth = true;
         state.error.auth = false;
         state.userInfo = null;
-        state.authOrigin = 'auth';
 
         deleteItemLS('token');
       })
@@ -57,7 +56,6 @@ const commonSlice = createSlice({
         state.loader.info = true;
         state.error.info = false;
         state.userInfo = null;
-        state.authOrigin = 'info';
       })
       .addCase(getUserInfoThunk.fulfilled, (state, action) => {
         const userInfo = { ...action?.payload?.userDetails, isLoggedIn: true };
@@ -70,7 +68,6 @@ const commonSlice = createSlice({
       .addCase(getUserInfoThunk.rejected, (state, action) => {
         state.loader.info = false;
         state.error.info = true;
-        state.messages.info = action?.error?.message;
         state.userInfo = null;
       })
       /* FOLLOW UNFOLLOW USER */
@@ -82,12 +79,10 @@ const commonSlice = createSlice({
         state.loader.followUnfollow = false;
         state.error.followUnfollow = false;
         state.userInfo = { ...state.userInfo, ...action?.payload?.userDetails };
-        state.messages.followUnfollow = action?.payload?.message;
       })
       .addCase(followUnfollowThunk.rejected, (state, action) => {
         state.loader.followUnfollow = false;
         state.error.followUnfollow = true;
-        state.messages.followUnfollow = action?.error?.message;
       });
   },
 });

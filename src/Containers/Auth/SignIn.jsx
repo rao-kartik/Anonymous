@@ -1,7 +1,7 @@
 import React from 'react';
 import Web3 from 'web3';
 import { useDispatch, useSelector } from 'react-redux';
-import { Box, Button, useToast } from '@chakra-ui/react';
+import { Box, Button } from '@chakra-ui/react';
 import { Buffer } from 'buffer';
 
 import MetamaskLogo from '../../Logos/MetamaskLogo';
@@ -10,6 +10,7 @@ import { authenticateUserThunk } from '../Common/asyncThunks';
 import { REDUCERS } from '../../constants';
 
 import styles from './signin.module.scss';
+import { triggerAlert } from '../../utils/common';
 
 const SignIn = (props) => {
   const { background = '#EFF6E0', color = '#000' } = props;
@@ -17,7 +18,6 @@ const SignIn = (props) => {
   const { loader } = useSelector((reducer) => reducer[REDUCERS.common]);
 
   const dispatch = useDispatch();
-  const toast = useToast();
 
   const handleLogin = async () => {
     try {
@@ -40,13 +40,8 @@ const SignIn = (props) => {
         dispatch(authenticateUserThunk(accounts[0]));
       }
     } catch (err) {
-      toast({
-        title: err?.message,
-        status: 'error',
-        duration: 2000,
-        isClosable: true,
-        position: 'top-right',
-      });
+      console.log(err);
+      triggerAlert('error', err.message);
     }
   };
 

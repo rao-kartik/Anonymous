@@ -1,7 +1,6 @@
 import React, { memo, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { Box, Flex } from '@chakra-ui/layout';
-import { useToast } from '@chakra-ui/toast';
 
 import Header from '../../Components/Common/Header/Header';
 import WritePost from '../../Components/Home/WritePost/WritePost';
@@ -14,13 +13,13 @@ import { REDUCERS } from '../../constants';
 import { headerHeight } from '../../Components/Common/Header/constants';
 import { fetchConversationListThunk, getPushUserThunk } from '../Chat/chatAsynkThunks';
 import colors from '../../styles/colors';
+import { triggerAlert } from '../../utils/common';
 
 const boxWidth = 25;
 const boxPadding = 6;
 
 const Home = () => {
   const dispatch = useDispatch();
-  const toast = useToast();
 
   const { pushUser, key } = useSelector((state) => state[REDUCERS.chat]);
 
@@ -32,13 +31,7 @@ const Home = () => {
 
       dispatch(fetchConversationListThunk({ walletAddress, conversationHash }));
     } else {
-      toast({
-        title: 'Push not authenticated',
-        status: 'error',
-        duration: 2000,
-        isClosable: true,
-        position: 'top-right',
-      });
+      triggerAlert('error', 'Push not authenticated');
 
       dispatch(getPushUserThunk());
     }

@@ -10,6 +10,8 @@ import { PATHS, REDUCERS } from './constants';
 import { deleteItemLS } from './utils/storage';
 import { getPushUserThunk } from './Containers/Chat/chatAsynkThunks';
 import { getUserInfoThunk } from './Containers/Common/asyncThunks';
+import { checkAccountConnectivity } from './utils/ether';
+import CommonToast from './HOC/CommonToast/CommonToast';
 
 const App = () => {
   const dispatch = useDispatch();
@@ -40,9 +42,9 @@ const App = () => {
 
   const checkIfMetamaskConnected = async () => {
     if (typeof window !== 'undefined') {
-      const accounts = await window.ethereum.request({ method: 'eth_accounts' });
+      const isConnected = await checkAccountConnectivity();
 
-      if (!accounts?.length > 0) {
+      if (!isConnected) {
         deleteItemLS('token');
       } else if (!userInfo && !userInfoFetched?.current) {
         dispatch(getUserInfoThunk());
@@ -65,4 +67,6 @@ const App = () => {
   return <RouterProvider router={router} />;
 };
 
-export default App;
+const withToast = CommonToast();
+
+export default withToast(App);

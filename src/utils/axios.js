@@ -1,14 +1,24 @@
 import Axios from 'axios';
 import { deleteItemLS, getItemLS } from './storage';
 import { PATHS } from '../constants';
+import { checkAccountConnectivity } from './ether';
+import { triggerAlert } from './common';
 
 export const apiBaseUrl = 'https://anonymous-fiio.onrender.com';
 
 const axios = Axios.create();
 
 axios.interceptors.request.use(
-  function (config) {
+  async function (config) {
     const token = getItemLS('token');
+
+    const isConnected = await checkAccountConnectivity();
+
+    if (!isConnected) {
+      triggerAlert('error', 'Wallet not connected');
+      window.location.href = PATHS.main;
+      return Promise.reject('Wallet not connected');
+    }
 
     config.baseURL = apiBaseUrl;
     config.url = `/api/v1/${config.url}`;

@@ -29,23 +29,20 @@ import {
   ModalFooter,
   ModalBody,
   ModalCloseButton,
-  useToast,
 } from '@chakra-ui/react';
 import { SlOptionsVertical } from 'react-icons/sl';
 import { followUnfollowThunk } from '../../../Containers/Common/asyncThunks';
-import { setCommonReducer } from '../../../Containers/Common/commonSlice';
 
 const Feeds = (props) => {
   const dispatch = useDispatch();
   const { posts, loader } = useSelector((state) => state[REDUCERS.home]);
-  const { userInfo, messages } = useSelector((state) => state[REDUCERS.common]);
+  const { userInfo } = useSelector((state) => state[REDUCERS.common]);
 
   const { isUserFeeds = false } = props;
 
   const [showComments, setShowComments] = useState(null);
   const [openDeleteModal, setOpenDeleteModal] = useState(null);
   const fetched = useRef(false);
-  const toast = useToast();
 
   const handleLikeDislike = (postId, previousStatus) => {
     dispatch(likeDislikeThunk({ postId, status: previousStatus === false ? 'like' : 'dislike' }));
@@ -89,19 +86,6 @@ const Feeds = (props) => {
       fetched.current = true;
     }
   }, []);
-
-  useEffect(() => {
-    if (messages?.followUnfollow) {
-      toast({
-        title: messages?.followUnfollow,
-        status: 'success',
-        duration: 2000,
-        isClosable: true,
-        position: 'top-right',
-      });
-      setCommonReducer({ messages: { followUnfollow: null } });
-    }
-  }, [messages?.followUnfollow]);
 
   return (
     <>
