@@ -5,6 +5,7 @@ import { Button, IconButton } from '@chakra-ui/button';
 import { SmallCloseIcon } from '@chakra-ui/icons';
 import { Input } from '@chakra-ui/input';
 import { Spinner } from '@chakra-ui/spinner';
+import { Checkbox, Tooltip } from '@chakra-ui/react';
 import { EVENTS } from '@pushprotocol/socket';
 
 import { REDUCERS } from '../../constants';
@@ -24,6 +25,7 @@ const Chat = ({ receiver, onClose, source }) => {
   const [msgInput, setMsgInput] = useState('');
   const [socketConnect, setSocketConnect] = useState(null);
   const [connected, setConnected] = useState(false);
+  const [enableSignEveryMessage, setEnableSignEveryMessage] = useState(true);
 
   const handleMsgInputChange = (e) => {
     const { value } = e.target;
@@ -36,8 +38,10 @@ const Chat = ({ receiver, onClose, source }) => {
 
     try {
       if (msgInput?.length > 0) {
-        const message = `Do you want to send the message: ${msgInput}\n\nto ${receiver}`;
-        await signTransaction(message);
+        if (enableSignEveryMessage) {
+          const message = `Do you want to send the message: ${msgInput}\n\nto ${receiver}`;
+          await signTransaction(message);
+        }
 
         const payload = {
           messageContent: msgInput,
@@ -52,6 +56,23 @@ const Chat = ({ receiver, onClose, source }) => {
       }
 
       setMsgInput('');
+      return;
+    } catch (err) {
+      triggerAlert('error', err.message);
+    }
+  };
+
+  const handleEnableSignEveryMsg = async (e) => {
+    try {
+      const { checked } = e.target;
+
+      if (!checked) {
+        const message = `Do you want to disable the message signing.`;
+        await signTransaction(message);
+      }
+
+      setEnableSignEveryMessage(checked);
+
       return;
     } catch (err) {
       triggerAlert('error', err.message);
@@ -119,24 +140,31 @@ const Chat = ({ receiver, onClose, source }) => {
       overflow="hidden"
       className={styles['chat-top-wrapper']}
     >
-      <Box position={'relative'} p={4} boxShadow="base" bg="#bdc3c7">
+      <Flex
+        position={'relative'}
+        p={4}
+        boxShadow="base"
+        bg="#bdc3c7"
+        justifyContent="space-between"
+        alignItems="center"
+      >
         <Text className={styles.title} fontWeight={600} position="relative">
           Chat
         </Text>
-        <IconButton
-          p={0}
-          w={6}
-          minW={6}
-          maxW={6}
-          h={6}
-          position="absolute"
-          right={4}
-          top={4}
-          onClick={onClose}
-        >
-          <SmallCloseIcon m={0} p={0} />
-        </IconButton>
-      </Box>
+        <Flex gap={1} alignItems="center">
+          <Tooltip
+            label={enableSignEveryMessage ? 'Disable message signing' : 'Enable message signing'}
+            placement="bottom"
+          >
+            <Button bg="none" _hover={{ bg: ' none' }} px={2} py={1} minW="auto" h="fit-content">
+              <Checkbox isChecked={enableSignEveryMessage} onChange={handleEnableSignEveryMsg} />
+            </Button>
+          </Tooltip>
+          <IconButton p={0} w={6} minW={6} maxW={6} h={6} onClick={onClose}>
+            <SmallCloseIcon m={0} p={0} />
+          </IconButton>
+        </Flex>
+      </Flex>
 
       <Flex
         h="74.5%"
