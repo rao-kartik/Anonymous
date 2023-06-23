@@ -9,6 +9,7 @@ import { newCommentThunk } from '../../../../Containers/Home/asyncThunks';
 const Comments = (props) => {
   const dispatch = useDispatch();
   const { comments } = useSelector((state) => state[REDUCERS.home]);
+  const { userInfo } = useSelector((state) => state[REDUCERS.common]);
 
   const { postId } = props;
 
@@ -35,7 +36,11 @@ const Comments = (props) => {
         <Flex overflowY="auto" direction="column" gap={4} maxH="240px" className="hide-scrollbar">
           {comments?.map((_comment) => (
             <Box bg="#dfe6e966" borderRadius={12} p={4} key={_comment?._id}>
-              <Heading size="xs">{_comment?.commentedBy}</Heading>
+              <Heading size="xs">
+                {_comment?.commentedBy?.walletAddress === userInfo?.walletAddress
+                  ? 'Self'
+                  : _comment?.commentedBy?.userName || _comment?.commentedBy?.walletAddress}
+              </Heading>
               <Text size="xs" mt={2}>
                 {_comment?.comment}
               </Text>

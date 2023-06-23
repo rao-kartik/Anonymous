@@ -8,6 +8,7 @@ import Home from './Containers/Home/Home';
 import { getPushUserThunk } from './Containers/Chat/chatAsynkThunks';
 import InitialPage from './Containers/InitialPage/InitialPage';
 import Fundraisers from './Containers/Fundraisers/Fundraisers';
+import { getUserInfoThunk } from './Containers/Common/asyncThunks';
 
 const App = () => {
   const dispatch = useDispatch();
@@ -15,6 +16,7 @@ const App = () => {
   const { userInfo } = useSelector((reducer) => reducer[REDUCERS.common]);
   const { pushUser, key } = useSelector((state) => state[REDUCERS.chat]);
 
+  const userInfoFetched = useRef(false);
   const fetched = useRef(false);
 
   const router = createBrowserRouter([
@@ -34,6 +36,13 @@ const App = () => {
       exact: true,
     },
   ]);
+
+  useEffect(() => {
+    if (!userInfo && !userInfoFetched?.current) {
+      dispatch(getUserInfoThunk());
+      userInfoFetched.current = true;
+    }
+  }, []);
 
   useEffect(() => {
     if (!fetched.current && userInfo?.isLoggedIn && !pushUser && !key) {

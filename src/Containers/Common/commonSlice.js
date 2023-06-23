@@ -1,6 +1,6 @@
 import { createSlice } from '@reduxjs/toolkit';
-import { authenticateUserThunk } from './asyncThunks';
-import { deleteItemLS, getItemLS, setItemLS } from '../../utils/storage';
+import { authenticateUserThunk, getUserInfoThunk } from './asyncThunks';
+import { deleteItemLS, setItemLS } from '../../utils/storage';
 import { REDUCERS } from '../../constants';
 
 const initialState = {
@@ -10,7 +10,7 @@ const initialState = {
   error: {
     auth: false,
   },
-  userInfo: getItemLS('user'),
+  userInfo: null,
 };
 
 const commonSlice = createSlice({
@@ -32,7 +32,6 @@ const commonSlice = createSlice({
         state.userInfo = null;
 
         deleteItemLS('token');
-        deleteItemLS('user');
       })
       .addCase(authenticateUserThunk.fulfilled, (state, action) => {
         const userInfo = { ...action?.payload?.userDetails, isLoggedIn: true };
@@ -42,7 +41,6 @@ const commonSlice = createSlice({
         state.userInfo = userInfo;
 
         setItemLS('token', action?.payload?.token);
-        setItemLS('user', userInfo);
       })
       .addCase(authenticateUserThunk.rejected, (state, action) => {
         state.loader.auth = false;
@@ -51,7 +49,24 @@ const commonSlice = createSlice({
         state.userInfo = null;
 
         deleteItemLS('token');
-        deleteItemLS('user');
+      })
+      .addCase(getUserInfoThunk.pending, (state) => {
+        state.loader.info = true;
+        state.error.info = false;
+        state.userInfo = null;
+      })
+      .addCase(getUserInfoThunk.fulfilled, (state, action) => {
+        const userInfo = { ...action?.payload?.userDetails, isLoggedIn: true };
+
+        state.loader.info = false;
+        state.error.info = false;
+        state.userInfo = userInfo;
+      })
+      .addCase(getUserInfoThunk.rejected, (state, action) => {
+        state.loader.info = false;
+        state.error.info = true;
+        state.error.infoMessage = action?.error?.message;
+        state.userInfo = null;
       });
   },
 });

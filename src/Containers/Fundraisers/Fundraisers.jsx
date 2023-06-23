@@ -6,8 +6,6 @@ const Fundraisers = () => {
   const contractFetched = useRef(false);
   const [contractData, setContractData] = useState();
 
-  
-
   useEffect(() => {
     if (!contractFetched?.current) {
       setContractData(connectToContract());
