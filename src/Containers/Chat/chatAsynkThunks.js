@@ -44,18 +44,12 @@ export const decryptMessageThunk = createAsyncThunk('DECRYPT_MESSAGE', async (pa
   try {
     const { pushUser, key } = others.getState()[REDUCERS.chat];
 
-    console.log({
-      messages: [payload],
-      connectedUser: pushUser,
-      pgpPrivateKey: key,
-    });
     const decryptedChat = await PushAPI.chat.decryptConversation({
       messages: [payload],
       connectedUser: pushUser,
       pgpPrivateKey: key,
     });
 
-    console.log(decryptedChat);
     return decryptedChat[0];
   } catch (err) {
     throw err?.response?.data || err;
@@ -203,7 +197,6 @@ export const fetchLatestConversationListThunk = createAsyncThunk(
         env: ENV,
       });
 
-      console.log(latestMessage);
       return latestMessage;
     } catch (err) {
       throw err?.response?.data || err;

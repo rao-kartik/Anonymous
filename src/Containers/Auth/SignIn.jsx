@@ -1,23 +1,21 @@
-import React, { useEffect } from 'react';
+import React from 'react';
 import Web3 from 'web3';
-import { useNavigate } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 import { Box, Button, useToast } from '@chakra-ui/react';
 
 import MetamaskLogo from '../../Logos/MetamaskLogo';
 
 import { authenticateUserThunk } from '../Common/asyncThunks';
-import { PATHS, REDUCERS } from '../../constants';
+import { REDUCERS } from '../../constants';
 
 import styles from './signin.module.scss';
 
 const SignIn = (props) => {
   const { background = '#EFF6E0', color = '#000' } = props;
 
-  const { userInfo, error, loader, messages } = useSelector((reducer) => reducer[REDUCERS.common]);
+  const { loader } = useSelector((reducer) => reducer[REDUCERS.common]);
 
   const dispatch = useDispatch();
-  const navigate = useNavigate();
   const toast = useToast();
 
   const handleLogin = async () => {
@@ -40,32 +38,6 @@ const SignIn = (props) => {
       });
     }
   };
-
-  useEffect(() => {
-    if (userInfo?.isLoggedIn) {
-      toast({
-        title: 'SignIn Successful',
-        status: 'success',
-        duration: 2000,
-        isClosable: true,
-        position: 'top-right',
-      });
-
-      navigate(PATHS.home);
-    }
-  }, [userInfo?.isLoggedIn]);
-
-  useEffect(() => {
-    if (error?.auth) {
-      toast({
-        title: messages?.authMessage,
-        status: 'error',
-        duration: 2000,
-        isClosable: true,
-        position: 'top-right',
-      });
-    }
-  }, [error?.auth, messages?.authMessage]);
 
   return (
     <Box position="relative">

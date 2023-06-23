@@ -4,15 +4,16 @@ import { Box, Flex } from '@chakra-ui/layout';
 import { useToast } from '@chakra-ui/toast';
 
 import Header from '../../Components/Common/Header/Header';
-
-import { headerHeight } from '../../Components/Common/Header/constants';
 import WritePost from '../../Components/Home/WritePost/WritePost';
 import Feeds from '../../Components/Home/Feeds/Feeds';
-import Chat from '../Chat/Chat';
 import FollowersFollowing from '../../Components/Home/FollowersFoloowing/FollowersFollowing';
-import { fetchConversationListThunk, getPushUserThunk } from '../Chat/chatAsynkThunks';
-import { REDUCERS } from '../../constants';
 import ChatMessages from '../../Components/Chat/ChatMessages/ChatMessages';
+import Chat from '../Chat/Chat';
+
+import { REDUCERS } from '../../constants';
+import { headerHeight } from '../../Components/Common/Header/constants';
+import { fetchConversationListThunk, getPushUserThunk } from '../Chat/chatAsynkThunks';
+import colors from '../../styles/colors';
 
 const boxWidth = 25;
 const boxPadding = 6;
@@ -50,7 +51,7 @@ const Home = () => {
   return (
     <>
       <Flex
-        bg="#124559"
+        bg={colors.pageBackground}
         h="100vh"
         w="100vw"
         position="relative"

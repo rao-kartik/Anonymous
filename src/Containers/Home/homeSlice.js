@@ -148,7 +148,6 @@ const homeSlice = createSlice({
       .addCase(newCommentThunk.fulfilled, (state, action) => {
         state.loader.getComments = false;
         state.error.getComments = false;
-        console.log(action.payload?.comment);
         state.comments = [action.payload?.comment, ...(state?.comments || [])];
         state.posts = state.posts.map((_item) =>
           _item?._id === action.payload?.comment?.post

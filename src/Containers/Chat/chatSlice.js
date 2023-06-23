@@ -109,7 +109,6 @@ const chatSlice = createSlice({
         state.loader.conversationList = true;
       })
       .addCase(decryptMessageThunk.fulfilled, (state, action) => {
-        console.log(action.payload);
         state.loader.conversationList = false;
         state.conversationList = [action.payload, ...state.conversationList];
       })

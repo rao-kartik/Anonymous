@@ -1,6 +1,6 @@
 import React, { useEffect, useRef } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { Navigate, RouterProvider, createBrowserRouter } from 'react-router-dom';
+import { Navigate, RouterProvider, createBrowserRouter, useNavigate } from 'react-router-dom';
 
 import { PATHS, REDUCERS } from './constants';
 
@@ -22,7 +22,7 @@ const App = () => {
   const router = createBrowserRouter([
     {
       path: PATHS.main,
-      element: userInfo?.isLoggedIn ? <Navigate to={PATHS.home} /> : <InitialPage />,
+      element: <InitialPage />,
       exact: true,
     },
     {

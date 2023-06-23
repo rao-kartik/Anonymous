@@ -1,6 +1,6 @@
 import { createSocketConnection } from '@pushprotocol/socket';
 
-export const ENV = 'staging';
+export const ENV = 'dev';
 
 export const connectToSocket = (user, key, socketType = 'notification') => {
   const pushSDKSocket = createSocketConnection({

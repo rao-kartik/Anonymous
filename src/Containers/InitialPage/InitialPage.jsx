@@ -1,6 +1,10 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import SignIn from '../Auth/SignIn';
-import { Box, Flex, Grid, GridItem, Heading, Image, Text } from '@chakra-ui/react';
+import { Box, Flex, Grid, GridItem, Heading, Image, Text, useToast } from '@chakra-ui/react';
+import { useLocation, useMatch, useMatches, useNavigate } from 'react-router-dom';
+import { useSelector } from 'react-redux';
+import { PATHS, REDUCERS } from '../../constants';
+import { setCommonReducer } from '../Common/commonSlice';
 
 const content = [
   {
@@ -26,6 +30,41 @@ const content = [
 ];
 
 const InitialPage = () => {
+  const { userInfo, error, messages, authOrigin } = useSelector(
+    (reducer) => reducer[REDUCERS.common]
+  );
+
+  const navigate = useNavigate();
+  const toast = useToast();
+
+  useEffect(() => {
+    if (userInfo?.isLoggedIn) {
+      if (authOrigin === 'auth') {
+        toast({
+          title: 'SignIn Successful',
+          status: 'success',
+          duration: 2000,
+          isClosable: true,
+          position: 'top-right',
+        });
+      }
+
+      navigate(PATHS.fundraiser);
+    }
+  }, [userInfo?.isLoggedIn]);
+
+  useEffect(() => {
+    if (error?.auth) {
+      toast({
+        title: messages?.authMessage,
+        status: 'error',
+        duration: 2000,
+        isClosable: true,
+        position: 'top-right',
+      });
+    }
+  }, [error?.auth, messages?.authMessage]);
+
   return (
     <Box position="relative" width="100%">
       <Box position="absolute" top={4} right={4} zIndex={2}>

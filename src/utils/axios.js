@@ -2,7 +2,7 @@ import Axios from 'axios';
 import { deleteItemLS, getItemLS } from './storage';
 import { PATHS } from '../constants';
 
-export const apiBaseUrl = '';
+export const apiBaseUrl = 'https://anonymous-fiio.onrender.com';
 
 const axios = Axios.create();
 

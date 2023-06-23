@@ -31,6 +31,7 @@ const commonSlice = createSlice({
         state.loader.auth = true;
         state.error.auth = false;
         state.userInfo = null;
+        state.authOrigin = 'auth';
 
         deleteItemLS('token');
       })
@@ -56,6 +57,7 @@ const commonSlice = createSlice({
         state.loader.info = true;
         state.error.info = false;
         state.userInfo = null;
+        state.authOrigin = 'info';
       })
       .addCase(getUserInfoThunk.fulfilled, (state, action) => {
         const userInfo = { ...action?.payload?.userDetails, isLoggedIn: true };
@@ -63,6 +65,7 @@ const commonSlice = createSlice({
         state.loader.info = false;
         state.error.info = false;
         state.userInfo = userInfo;
+        state.origin = 'auth';
       })
       .addCase(getUserInfoThunk.rejected, (state, action) => {
         state.loader.info = false;
