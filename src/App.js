@@ -1,13 +1,14 @@
 import React, { useEffect, useRef } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { Navigate, RouterProvider, createBrowserRouter, useNavigate } from 'react-router-dom';
-
-import { PATHS, REDUCERS } from './constants';
+import { Navigate, RouterProvider, createBrowserRouter } from 'react-router-dom';
 
 import Home from './Containers/Home/Home';
-import { getPushUserThunk } from './Containers/Chat/chatAsynkThunks';
 import InitialPage from './Containers/InitialPage/InitialPage';
 import Fundraisers from './Containers/Fundraisers/Fundraisers';
+
+import { PATHS, REDUCERS } from './constants';
+import { deleteItemLS } from './utils/storage';
+import { getPushUserThunk } from './Containers/Chat/chatAsynkThunks';
 import { getUserInfoThunk } from './Containers/Common/asyncThunks';
 
 const App = () => {
@@ -37,11 +38,22 @@ const App = () => {
     },
   ]);
 
-  useEffect(() => {
-    if (!userInfo && !userInfoFetched?.current) {
-      dispatch(getUserInfoThunk());
-      userInfoFetched.current = true;
+  const checkIfMetamaskConnected = async () => {
+    if (typeof window !== 'undefined') {
+      const connected = await window.ethereum.isConnected();
+      console.log(connected);
+
+      if (!connected) {
+        deleteItemLS('token');
+      } else if (!userInfo && !userInfoFetched?.current) {
+        dispatch(getUserInfoThunk());
+        userInfoFetched.current = true;
+      }
     }
+  };
+
+  useEffect(() => {
+    checkIfMetamaskConnected();
   }, []);
 
   useEffect(() => {

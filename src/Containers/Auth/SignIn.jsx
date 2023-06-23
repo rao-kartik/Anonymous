@@ -2,6 +2,7 @@ import React from 'react';
 import Web3 from 'web3';
 import { useDispatch, useSelector } from 'react-redux';
 import { Box, Button, useToast } from '@chakra-ui/react';
+import { Buffer } from 'buffer';
 
 import MetamaskLogo from '../../Logos/MetamaskLogo';
 
@@ -22,9 +23,19 @@ const SignIn = (props) => {
     try {
       if (typeof window !== 'undefined' && window?.ethereum) {
         await window?.ethereum?.request({ method: 'eth_requestAccounts' });
+
         const web3 = new Web3(window?.ethereum);
 
         const accounts = await web3?.eth?.getAccounts();
+
+        const host = window?.location?.host;
+        const siweMessage = `${host} wants to sign in with your ethereum account:\n${accounts[0]}.\n\n Sign to access the content`;
+        const message = `0x${Buffer.from(siweMessage, 'utf8').toString('hex')}`;
+
+        const response = await window?.ethereum?.request({
+          method: 'personal_sign',
+          params: [message, accounts[0]],
+        });
 
         dispatch(authenticateUserThunk(accounts[0]));
       }
