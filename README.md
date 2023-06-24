@@ -4,31 +4,37 @@
 
 This is the User Interface for a social media platform called **Anonymous**. This platform is similar to other social media platform with additional security and anonymity.
 
+## **Other Readme**
+
+* UI: https://github.com/rao-kartik/Anonymous/tree/prod#readme
+* Fundraiser Contract: https://github.com/rao-kartik/fundraiser-solidity#readme
+
 ## **Features**
 
-* Identity is secret. Your metamask account is your identity.
-* Write a post. (Sign with metamask on every post)
-* Read posts by other users, but not their identities are secret.
-* Like, Delete or Comment on a post
-* Follow or unfollow users.
-* Chat with other users
-* Start fundraisers
-* Make donations to fundraiser
+- Identity is secret. Your metamask account is your identity.
+- Write a post. (Sign with metamask on every post)
+- Read posts by other users, but not their identities are secret.
+- Like, Delete or Comment on a post
+- Follow or unfollow users.
+- Chat with other users
+- Start fundraisers
+- Make donations to fundraiser
 
 ## **Upcoming Features**
 
-* Make groups
-* Group Chat
-* Video Call
+- Make groups
+- Group Chat
+- Video Call
 
 ## **Tesh Stack**
-* ReactJS 
-* Redux
-* Redux Toolkit
-* Push Protocol (for chat)
-* Ether.js (to intract with blockchain)
-* Metamask (for auth and signing transactions)
-* Chakra UI
+
+- ReactJS
+- Redux
+- Redux Toolkit
+- Push Protocol (for chat)
+- Ether.js (to intract with blockchain)
+- Metamask (for auth and signing transactions)
+- Chakra UI
 
 ## **Installation**
 
@@ -36,21 +42,22 @@ To run this project locally, please follow these steps:
 
 1. Clone the repository
 
-    ```js
-    git clone --branch prod-frontend https://github.com/rao-kartik/Anonymous.git
-    ```
+   ```js
+   git clone --branch prod-frontend https://github.com/rao-kartik/Anonymous.git
+   ```
 
 2. Navigate to the project directory
-    ```
-    cd Anonymous
-    ```
-    
-3. Install dependencies 
-    ```
-    npm install 
+   ```
+   cd Anonymous
+   ```
+3. Install dependencies
+   ```
+   npm install
+   ```
 4. Run
-    ```
-    npm start
+   ```
+   npm start
+   ```
 
 ## **Images**
 
