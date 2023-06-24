@@ -16,6 +16,7 @@ import { setConversationList } from './chatSlice';
 import { signTransaction } from '../../utils/ether';
 
 import styles from './chat.module.scss';
+import { spinnerConfig } from '../../styles/varaibles';
 
 const Chat = ({ receiver, onClose, source }) => {
   const dispatch = useDispatch();
@@ -177,7 +178,7 @@ const Chat = ({ receiver, onClose, source }) => {
           : { justifyContent: 'flex-start' })}
       >
         {loader?.conversationList ? (
-          <Spinner speed="1s" emptyColor="#b2bec3" color="#ff7675" size="lg" thickness="4px" />
+          <Spinner {...spinnerConfig} />
         ) : (
           conversationList?.map((_message) => {
             const isReceiver = receiver?.includes(addressPrefix)

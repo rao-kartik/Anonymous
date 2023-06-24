@@ -4,7 +4,7 @@ import { Box, Button, Flex, Heading } from '@chakra-ui/react';
 import Header from '../../Components/Common/Header/Header';
 
 import { headerHeight } from '../../Components/Common/Header/constants';
-import colors from '../../styles/colors';
+import colors from '../../styles/varaibles';
 import NewFundraiser from '../../Components/Fundraiser/NewFundraiser/NewFundraiser';
 import { connectToContract } from '../../utils/ether';
 import { useDispatch } from 'react-redux';
@@ -72,7 +72,7 @@ const Fundraisers = () => {
           </Button>
         </Flex>
 
-        <AllFundraisers />
+        <AllFundraisers contract={contractDetails} />
       </Box>
 
       <NewFundraiser

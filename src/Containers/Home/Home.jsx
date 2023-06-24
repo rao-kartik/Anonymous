@@ -12,7 +12,7 @@ import Chat from '../Chat/Chat';
 import { REDUCERS } from '../../constants';
 import { headerHeight } from '../../Components/Common/Header/constants';
 import { fetchConversationListThunk, getPushUserThunk } from '../Chat/chatAsynkThunks';
-import colors from '../../styles/colors';
+import colors from '../../styles/varaibles';
 import { triggerAlert } from '../../utils/common';
 
 const boxWidth = 25;

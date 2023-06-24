@@ -34,6 +34,7 @@ import { SlOptionsVertical } from 'react-icons/sl';
 import { followUnfollowThunk } from '../../../Containers/Common/asyncThunks';
 import { triggerAlert } from '../../../utils/common';
 import { signTransaction } from '../../../utils/ether';
+import { spinnerConfig } from '../../../styles/varaibles';
 
 const Feeds = (props) => {
   const dispatch = useDispatch();
@@ -102,7 +103,7 @@ const Feeds = (props) => {
     <>
       <Flex p={4} pt={0} direction="column" alignItems="flex-end" gap={4}>
         {loader?.getPost ? (
-          <Spinner />
+          <Spinner {...spinnerConfig} />
         ) : (
           posts?.map((_item) => {
             const isSelf = _item?.postedBy?.walletAddress === userInfo?.walletAddress;
