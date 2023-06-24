@@ -1,11 +1,11 @@
 import { createSlice } from '@reduxjs/toolkit';
 import { REDUCERS } from '../../constants';
-import { fetchContractDetailsThunk } from './fundraiserThunk';
 
 const initialState = {
   loader: {},
   error: {},
   messages: {},
+  allFundraisers: [],
 };
 
 const fundraiser = createSlice({
@@ -18,27 +18,12 @@ const fundraiser = createSlice({
         ...action.payload,
       };
     },
-  },
-  extraReducers: (builder) => {
-    builder
-      /* FETCH CONTRACT DETAILS */
-      .addCase(fetchContractDetailsThunk.pending, (state) => {
-        state.loader.contractDetails = true;
-        state.error.contractDetails = false;
-      })
-      .addCase(fetchContractDetailsThunk.fulfilled, (state, action) => {
-        state.loader.contractDetails = false;
-        state.error.contractDetails = false;
-        state.contractDetails = action.payload;
-      })
-      .addCase(fetchContractDetailsThunk.rejected, (state, action) => {
-        state.loader.contractDetails = false;
-        state.error.contractDetails = true;
-        state.messages.contractDetails = action?.error?.message;
-      });
+    setAllFundraiser: (state, action) => {
+      state.allFundraisers = [action.payload, ...state?.allFundraisers];
+    },
   },
 });
 
-export const { setFundraiserReducer } = fundraiser.actions;
+export const { setFundraiserReducer, setAllFundraiser } = fundraiser.actions;
 
 export default fundraiser.reducer;

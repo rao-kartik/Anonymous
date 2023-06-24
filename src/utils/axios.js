@@ -4,7 +4,7 @@ import { PATHS } from '../constants';
 import { checkAccountConnectivity } from './ether';
 import { triggerAlert } from './common';
 
-export const apiBaseUrl = 'https://anonymous-fiio.onrender.com';
+export const apiBaseUrl = '';
 
 const axios = Axios.create();
 

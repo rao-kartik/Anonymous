@@ -15,28 +15,14 @@ import {
   Textarea,
 } from '@chakra-ui/react';
 import React, { useState } from 'react';
-import { useDispatch } from 'react-redux';
-import { startFundRaiserThunk } from '../../../Containers/Fundraisers/fundraiserThunk';
-
-const categoryOptions = [
-  'EDUCATION',
-  'MEDICAL',
-  'WOMANANDGIRLS',
-  'ANIMALS',
-  'CREATIVE',
-  'FOODANDHUNGER',
-  'ENVIRONMENT',
-  'CHILDREN',
-  'MEMORIAL',
-  'COMMUNITYDEVELOPMENT',
-  'OTHERS',
-];
+import { triggerAlert } from '../../../utils/common';
+import { categoryOptions } from '../../../Containers/Fundraisers/util';
 
 const NewFundraiser = (props) => {
-  const { open, onClose, contractDetails } = props;
-  const dispatch = useDispatch();
+  const { open, onClose, contract } = props;
 
   const [formData, setFormData] = useState();
+  const [transactionDetails, setTransactionDetails] = useState(null);
 
   const handleFormDataChange = (e) => {
     const { name, value } = e.target;
@@ -47,8 +33,23 @@ const NewFundraiser = (props) => {
     });
   };
 
-  const handleSubmit = () => {
-    dispatch(startFundRaiserThunk({ data: formData, contractDetails }));
+  const handleSubmit = async () => {
+    try {
+      const tx = await contract.startFundRaiser(
+        formData?.raisedFor,
+        formData?.amount,
+        formData?.toBeRaisedInDays,
+        formData?.about,
+        formData?.category,
+        { gasLimit: 400000 }
+      );
+
+      setTransactionDetails(tx);
+      return;
+    } catch (err) {
+      triggerAlert('error', err.message, 3000);
+      return;
+    }
   };
 
   return (
@@ -96,8 +97,8 @@ const NewFundraiser = (props) => {
                     name="category"
                     onChange={handleFormDataChange}
                   >
-                    {categoryOptions?.map((_opt) => (
-                      <option key={_opt} value={_opt} style={{ textTransform: 'capitalize' }}>
+                    {categoryOptions?.map((_opt, _i) => (
+                      <option key={_opt} value={_i} style={{ textTransform: 'capitalize' }}>
                         {_opt?.toLowerCase()}
                       </option>
                     ))}

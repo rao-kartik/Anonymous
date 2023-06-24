@@ -18,3 +18,7 @@ export const errorAlert = (err, redirect) => {
     window.location.href = PATHS.main;
   }
 };
+
+export const delay = (ms) => {
+  return new Promise((resolve) => setTimeout(resolve, ms));
+};

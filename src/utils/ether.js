@@ -1,5 +1,7 @@
 import { ethers } from 'ethers';
 import { Buffer } from 'buffer';
+import { triggerAlert } from './common';
+import fundraiser from '../Containers/Fundraisers/Fundraiser.json';
 
 export const checkAccountConnectivity = async () => {
   const accounts = await window.ethereum.request({ method: 'eth_accounts' });
@@ -29,5 +31,19 @@ export const signTransaction = async (message, from) => {
       method: 'personal_sign',
       params: [message, address],
     });
+  }
+};
+
+export const connectToContract = async () => {
+  try {
+    const abi = fundraiser?.abi;
+
+    const { signer } = await getEtherSigner();
+
+    const contract = new ethers.Contract(process.env.REACT_APP_CONTRACT_ADDR, abi, signer);
+    return contract;
+  } catch (err) {
+    triggerAlert('error', err?.message);
+    throw err;
   }
 };

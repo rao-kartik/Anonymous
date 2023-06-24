@@ -46,6 +46,7 @@ const App = () => {
 
       if (!isConnected) {
         deleteItemLS('token');
+        window.location.href = PATHS.main;
       } else if (!userInfo && !userInfoFetched?.current) {
         dispatch(getUserInfoThunk());
         userInfoFetched.current = true;

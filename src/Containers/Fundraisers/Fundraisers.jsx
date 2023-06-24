@@ -1,28 +1,56 @@
 import React, { useEffect, useRef, useState } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
 import { Box, Button, Flex, Heading } from '@chakra-ui/react';
 
 import Header from '../../Components/Common/Header/Header';
 
-import { fetchContractDetailsThunk } from './fundraiserThunk';
-import { REDUCERS } from '../../constants';
 import { headerHeight } from '../../Components/Common/Header/constants';
 import colors from '../../styles/colors';
 import NewFundraiser from '../../Components/Fundraiser/NewFundraiser/NewFundraiser';
-import { connectToContract } from './util';
+import { connectToContract } from '../../utils/ether';
+import { useDispatch } from 'react-redux';
+import { setAllFundraiser, setFundraiserReducer } from './fundraiserSlice';
+import { triggerAlert } from '../../utils/common';
+import { formatFundraiserData } from './util';
 
 const Fundraisers = () => {
   const dispatch = useDispatch();
-  // const { contractDetails } = useSelector((state) => state?.[REDUCERS?.fundraiser]);
   const [contractDetails, setContractDetails] = useState(null);
+  const [loading, setLoading] = useState(false);
 
   const [startFundraiser, setStartFundraiser] = useState(false);
   const contractFetched = useRef(false);
 
+  const handleFetchContractDetails = async () => {
+    try {
+      setLoading(true);
+      const contract = await connectToContract();
+      setContractDetails(contract);
+
+      let totalFundraisers = await contract?.getTotalFundraisers();
+      totalFundraisers = totalFundraisers?.toNumber();
+      dispatch(setFundraiserReducer({ totalFundraisers }));
+
+      if (totalFundraisers > 0) {
+        console.log(contract);
+        for (let i = 0; i < totalFundraisers; i++) {
+          let fR = await contract.fundRaisers(i);
+          const isBlacklisted = await contract?.blacklistedFundraisers(i);
+          fR = formatFundraiserData({ ...fR, id: i }, isBlacklisted);
+          dispatch(setAllFundraiser(fR));
+        }
+      }
+      setLoading(false);
+      return;
+    } catch (err) {
+      triggerAlert('error', err?.message);
+      setLoading(false);
+      return;
+    }
+  };
+
   useEffect(() => {
     if (!contractFetched?.current) {
-      // dispatch(fetchContractDetailsThunk());
-      setContractDetails(connectToContract());
+      handleFetchContractDetails();
       contractFetched.current = true;
     }
   }, []);
@@ -49,7 +77,7 @@ const Fundraisers = () => {
       <NewFundraiser
         open={startFundraiser}
         onClose={() => setStartFundraiser(false)}
-        contractDetails={contractDetails}
+        contract={contractDetails}
       />
     </>
   );
