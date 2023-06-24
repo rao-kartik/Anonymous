@@ -21,6 +21,15 @@ This is the User Interface for a social media platform called **Anonymous**. Thi
 * Group Chat
 * Video Call
 
+## **Tesh Stack**
+* ReactJS 
+* Redux
+* Redux Toolkit
+* Push Protocol (for chat)
+* Ether.js (to intract with blockchain)
+* Metamask (for auth and signing transactions)
+* Chakra UI
+
 ## **Installation**
 
 To run this project locally, please follow these steps:
