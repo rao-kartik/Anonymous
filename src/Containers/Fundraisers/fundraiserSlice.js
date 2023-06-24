@@ -5,7 +5,7 @@ const initialState = {
   loader: {},
   error: {},
   messages: {},
-  allFundraisers: [],
+  allFundraisers: {},
 };
 
 const fundraiser = createSlice({
@@ -19,7 +19,7 @@ const fundraiser = createSlice({
       };
     },
     setAllFundraiser: (state, action) => {
-      state.allFundraisers = [action.payload, ...state?.allFundraisers];
+      state.allFundraisers = { ...action.payload, ...state?.allFundraisers };
     },
   },
 });

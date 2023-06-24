@@ -11,18 +11,18 @@ import { useDispatch } from 'react-redux';
 import { setAllFundraiser, setFundraiserReducer } from './fundraiserSlice';
 import { triggerAlert } from '../../utils/common';
 import { formatFundraiserData } from './util';
+import AllFundraisers from '../../Components/Fundraiser/AllFundraisers/AllFundraisers';
 
 const Fundraisers = () => {
   const dispatch = useDispatch();
   const [contractDetails, setContractDetails] = useState(null);
-  const [loading, setLoading] = useState(false);
 
   const [startFundraiser, setStartFundraiser] = useState(false);
   const contractFetched = useRef(false);
 
   const handleFetchContractDetails = async () => {
     try {
-      setLoading(true);
+      dispatch(setFundraiserReducer({ loader: { setAllFundraiser: true } }));
       const contract = await connectToContract();
       setContractDetails(contract);
 
@@ -31,19 +31,18 @@ const Fundraisers = () => {
       dispatch(setFundraiserReducer({ totalFundraisers }));
 
       if (totalFundraisers > 0) {
-        console.log(contract);
         for (let i = 0; i < totalFundraisers; i++) {
           let fR = await contract.fundRaisers(i);
           const isBlacklisted = await contract?.blacklistedFundraisers(i);
           fR = formatFundraiserData({ ...fR, id: i }, isBlacklisted);
-          dispatch(setAllFundraiser(fR));
+          dispatch(setAllFundraiser({ [i]: fR }));
         }
       }
-      setLoading(false);
+      dispatch(setFundraiserReducer({ loader: { setAllFundraiser: false } }));
       return;
     } catch (err) {
       triggerAlert('error', err?.message);
-      setLoading(false);
+      dispatch(setFundraiserReducer({ loader: { setAllFundraiser: false } }));
       return;
     }
   };
@@ -72,6 +71,8 @@ const Fundraisers = () => {
             Start New Fundraiser
           </Button>
         </Flex>
+
+        <AllFundraisers />
       </Box>
 
       <NewFundraiser

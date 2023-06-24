@@ -171,7 +171,7 @@ const Feeds = (props) => {
 
                       <Text fontSize="xs" color="#636e72">
                         {moment(_item.postedAt).format('DD MMM YYYY')} at{' '}
-                        {moment().format('h:mm A')}
+                        {moment(_item.postedAt).format('h:mm A')}
                       </Text>
                     </Box>
                   </Flex>
