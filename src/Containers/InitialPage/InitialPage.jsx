@@ -35,7 +35,7 @@ const InitialPage = () => {
 
   useEffect(() => {
     if (userInfo?.isLoggedIn) {
-      navigate(PATHS.fundraiser);
+      navigate(PATHS.home);
     }
   }, [userInfo?.isLoggedIn]);
 
