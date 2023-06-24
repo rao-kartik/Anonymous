@@ -27,6 +27,7 @@ const Fundraisers = () => {
       setContractDetails(contract);
 
       let totalFundraisers = await contract?.getTotalFundraisers();
+      console.log(totalFundraisers)
       totalFundraisers = totalFundraisers?.toNumber();
       dispatch(setFundraiserReducer({ totalFundraisers }));
 
@@ -41,6 +42,7 @@ const Fundraisers = () => {
       dispatch(setFundraiserReducer({ loader: { setAllFundraiser: false } }));
       return;
     } catch (err) {
+      console.log(err?.message)
       triggerAlert('error', err?.message);
       dispatch(setFundraiserReducer({ loader: { setAllFundraiser: false } }));
       return;
