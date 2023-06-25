@@ -13,7 +13,7 @@ const Providers = dynamic(() => import('@/lib/Providers'), {
   loading: () => <div>Loading...</div>,
 });
 
-export default function RootLayout({ children }) {
+function RootLayout({ children }) {
   return (
     <html lang="en">
       <body className={inter.className}>
@@ -22,3 +22,5 @@ export default function RootLayout({ children }) {
     </html>
   );
 }
+
+export default RootLayout;

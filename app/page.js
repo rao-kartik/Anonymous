@@ -1,95 +1,149 @@
-import Image from 'next/image'
-import styles from './page.module.css'
+'use client';
+import React, { useEffect } from 'react';
+import { Box, Flex, Grid, GridItem, Heading, Image, Text } from '@chakra-ui/react';
+import { useSelector } from 'react-redux';
+import { redirect } from 'next/navigation';
 
-export default function Home() {
+import { REDUCERS } from '@/lib/redux';
+import { ROUTES } from '@/utils/routes';
+import SignIn from '@/components/Common/Auth/SignIn';
+import CommonToast from '@/HOC/CommonToast/CommonToast';
+
+const content = [
+  {
+    imageUrl:
+      'https://framerusercontent.com/images/DVdb5CRU9H4nOYtwcELIMAh2I.jpg?scale-down-to=512',
+    title: 'Chat',
+    description:
+      'Anonymously chat with friends and make new connections. Anonymous gives you the freedom to speak your mind without revealing your identity.',
+  },
+  {
+    imageUrl:
+      'https://framerusercontent.com/images/HFgKRHP2cSG5YaJDVVeiyiT75e0.jpg?scale-down-to=512',
+    title: 'Fundraising',
+    description:
+      'Anonymous takes privacy seriously and ensures that your data remains protected. Enjoy a safe digital environment without compromising on creativity.',
+  },
+  {
+    imageUrl: 'https://framerusercontent.com/images/ELdZeUL7ESUeWSf7qHISAG50.jpg?scale-down-to=512',
+    title: 'Customize',
+    description:
+      'Personalize your experience and create a unique space to express yourself. With Anonymous, make your mark without revealing who you are.',
+  },
+];
+
+const InitialPage = () => {
+  const { userInfo } = useSelector((reducer) => reducer[REDUCERS.common]);
+
+  useEffect(() => {
+    if (userInfo?.isLoggedIn) {
+      redirect(ROUTES.home);
+    }
+  }, [userInfo?.isLoggedIn]);
+
   return (
-    <main className={styles.main}>
-      <div className={styles.description}>
-        <p>
-          Get started by editing&nbsp;
-          <code className={styles.code}>app/page.js</code>
-        </p>
-        <div>
-          <a
-            href="https://vercel.com?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            By{' '}
-            <Image
-              src="/vercel.svg"
-              alt="Vercel Logo"
-              className={styles.vercelLogo}
-              width={100}
-              height={24}
-              priority
-            />
-          </a>
-        </div>
-      </div>
+    <Box position="relative" width="100%">
+      <Box position="absolute" top={4} right={4} zIndex={2}>
+        <SignIn />
+      </Box>
 
-      <div className={styles.center}>
-        <Image
-          className={styles.logo}
-          src="/next.svg"
-          alt="Next.js Logo"
-          width={180}
-          height={37}
-          priority
+      <Flex w="100%" h="100vh" alignItems="center" justifyContent="center" bg="#124559">
+        <Box
+          w="100%"
+          h="100%"
+          position="absolute"
+          top={0}
+          left={0}
+          backgroundImage="url('https://framerusercontent.com/images/grKeC7LspLoStyfrcBYxRXFV8.png')"
+          objectFit="cover"
+          objectPosition="center"
+          backgroundSize="100%"
+          opacity={0.1}
+          overflow="hidden"
         />
-      </div>
-
-      <div className={styles.grid}>
-        <a
-          href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-          className={styles.card}
-          target="_blank"
-          rel="noopener noreferrer"
+        <Heading
+          color="#aec3b0"
+          position="relative"
+          zIndex={1}
+          size="4xl"
+          maxW={800}
+          textAlign="center"
+          lineHeight={1.2}
         >
-          <h2>
-            Docs <span>-&gt;</span>
-          </h2>
-          <p>Find in-depth information about Next.js features and API.</p>
-        </a>
+          Revolutionaize your anonymity online
+        </Heading>
+      </Flex>
 
-        <a
-          href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-          className={styles.card}
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <h2>
-            Learn <span>-&gt;</span>
-          </h2>
-          <p>Learn about Next.js in an interactive course with&nbsp;quizzes!</p>
-        </a>
+      <Box bg="#aec3b0">
+        <Flex p={100} maxW="1200px" margin="auto">
+          <Heading w="50%" size="2xl">
+            Post <br /> Anonymously
+          </Heading>
 
-        <a
-          href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-          className={styles.card}
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <h2>
-            Templates <span>-&gt;</span>
-          </h2>
-          <p>Explore the Next.js 13 playground.</p>
-        </a>
+          <Text w="50%">
+            Forget about privacy concerns while sharing thoughts and opinions. Anonymous lets you
+            post anonymously, so you'll feel free to express yourself without fear of judgment.
+          </Text>
+        </Flex>
+      </Box>
 
-        <a
-          href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-          className={styles.card}
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <h2>
-            Deploy <span>-&gt;</span>
-          </h2>
-          <p>
-            Instantly deploy your Next.js site to a shareable URL with Vercel.
-          </p>
-        </a>
-      </div>
-    </main>
-  )
-}
+      <Box bg="#fff" pb={100}>
+        <Flex maxW="1200px" margin="auto" p={100}>
+          <Box w="50%">
+            <Image
+              src="https://framerusercontent.com/images/tWxCf6tZvRCos616cKV5PxR8Lh4.png"
+              alt="pic"
+              w={200}
+              h={200}
+            />
+          </Box>
+
+          <Box w="50%">
+            <Heading lineHeight={2}>Groups</Heading>
+
+            <Text>
+              Find like-minded people and share ideas without limitations. Our diverse and engaging
+              groups make it simple to dive into discussions on various topics and make connections.
+            </Text>
+          </Box>
+        </Flex>
+
+        <Grid templateColumns="repeat(3, 1fr)" gap={8} maxW="1200px" margin="auto" px={100}>
+          {content?.map((_item) => (
+            <GridItem w="100%" key={_item?.title}>
+              <Flex w="100%" flexDirection="column" gap={6}>
+                <Box overflow="hidden" borderRadius={24} filter="grayscale(100%)">
+                  <Image src={_item?.imageUrl} w="100%" h={280} alt={_item?.title} />
+                </Box>
+
+                <Flex gap={2} flexDirection="column">
+                  <Text lineHeight={1.4}>{_item?.title}</Text>
+
+                  <Text>{_item?.description}</Text>
+                </Flex>
+              </Flex>
+            </GridItem>
+          ))}
+        </Grid>
+      </Box>
+
+      <Flex flexDirection="column" alignItems="center" justifyContent="center" gap={8} pb={100}>
+        <Heading>Get Started</Heading>
+        <Text maxW={600} textAlign="center">
+          Join the revolution of anonymous social media. Be part of a community that values privacy
+          and individuality. Sign up now to enjoy the world of AnonSocial!
+        </Text>
+
+        <SignIn background="#01161e" color="#ffffff" />
+      </Flex>
+
+      <Text w="100%" textAlign="center" pb={50}>
+        © 2023 Anonymous, All Rights Reserved.
+      </Text>
+    </Box>
+  );
+};
+
+const withToast = CommonToast();
+
+export default withToast(InitialPage);
