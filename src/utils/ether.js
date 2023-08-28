@@ -1,7 +1,7 @@
-import { ethers } from 'ethers';
+import { BrowserProvider, Contract } from 'ethers';
 import { Buffer } from 'buffer';
 import { triggerAlert } from './common';
-import fundraiser from '../Containers/Fundraisers/Fundraiser.json';
+import fundraiser from './configs/Fundraiser.json';
 
 export const checkAccountConnectivity = async () => {
   const accounts = await window.ethereum.request({ method: 'eth_accounts' });
@@ -10,12 +10,10 @@ export const checkAccountConnectivity = async () => {
 };
 
 export const getEtherSigner = async () => {
-  const provider = new ethers.providers.Web3Provider(window.ethereum);
+  const provider = new BrowserProvider(window.ethereum);
   const accounts = await provider.listAccounts();
 
-  const _signer = provider.getSigner(accounts[0]);
-
-  return { provider, signer: _signer, account: accounts[0] };
+  return { provider, signer: accounts?.[0]?.provider, account: accounts?.[0]?.address };
 };
 
 export const signTransaction = async (message, from) => {
@@ -25,8 +23,9 @@ export const signTransaction = async (message, from) => {
 
     if (!from) {
       address = await getEtherSigner();
-      address = address.account;
+      address = address?.account;
     }
+
     await window?.ethereum?.request({
       method: 'personal_sign',
       params: [message, address],
@@ -40,7 +39,7 @@ export const connectToContract = async () => {
 
     const { signer } = await getEtherSigner();
 
-    const contract = new ethers.Contract(process.env.REACT_APP_CONTRACT_ADDR, abi, signer);
+    const contract = new Contract(process.env.REACT_APP_CONTRACT_ADDR, abi, signer);
     return contract;
   } catch (err) {
     triggerAlert('error', err?.message);
