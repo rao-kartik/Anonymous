@@ -108,7 +108,7 @@ const InitialPage = () => {
 
         <Grid templateColumns="repeat(3, 1fr)" gap={8} maxW="1200px" margin="auto" px={100}>
           {content?.map((_item) => (
-            <GridItem w="100%">
+            <GridItem w="100%" key={_item?.title}>
               <Flex w="100%" flexDirection="column" gap={6}>
                 <Box overflow="hidden" borderRadius={24} filter="grayscale(100%)">
                   <Image src={_item?.imageUrl} w="100%" h={280} />

@@ -15,6 +15,7 @@ import CommonToast from './HOC/CommonToast/CommonToast';
 
 const App = () => {
   const dispatch = useDispatch();
+  const pathname = window?.location?.pathname;
 
   const { userInfo } = useSelector((reducer) => reducer[REDUCERS.common]);
   const { pushUser, key } = useSelector((state) => state[REDUCERS.chat]);
@@ -44,7 +45,7 @@ const App = () => {
     if (typeof window !== 'undefined') {
       const isConnected = await checkAccountConnectivity();
 
-      if (!isConnected) {
+      if (!isConnected && pathname !== PATHS?.main) {
         deleteItemLS('token');
         window.location.href = PATHS.main;
       } else if (!userInfo && !userInfoFetched?.current) {

@@ -4,9 +4,13 @@ import { triggerAlert } from './common';
 import fundraiser from '../Containers/Fundraisers/Fundraiser.json';
 
 export const checkAccountConnectivity = async () => {
-  const accounts = await window.ethereum.request({ method: 'eth_accounts' });
+  if (window?.ethereum) {
+    const accounts = await window?.ethereum?.request({ method: 'eth_accounts' });
 
-  return accounts?.length > 0;
+    return accounts?.length > 0;
+  }
+
+  return false;
 };
 
 export const getEtherSigner = async () => {

@@ -13,8 +13,9 @@ axios.interceptors.request.use(
     const token = getItemLS('token');
 
     const isConnected = await checkAccountConnectivity();
+    const pathname = window?.location?.pathname;
 
-    if (!isConnected) {
+    if (!isConnected && pathname !== PATHS?.main) {
       triggerAlert('error', 'Wallet not connected');
       window.location.href = PATHS.main;
       return Promise.reject('Wallet not connected');
