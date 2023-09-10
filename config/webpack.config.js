@@ -282,10 +282,12 @@ module.exports = function (webpackEnv) {
     },
     resolve: {
       fallback: {
-        zlib: false,
-        url: false,
-        https: false,
-        http: false,
+        zlib: require.resolve('browserify-zlib'),
+        url: require.resolve("url/"),
+        https: require.resolve('https-browserify'),
+        http: require.resolve('stream-http'),
+        assert: require.resolve("assert/"),
+        stream: require.resolve("stream-browserify")
       },
       // This allows you to set a fallback for where webpack should look for modules.
       // We placed these paths second because we want `node_modules` to "win"
